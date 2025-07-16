@@ -2,4 +2,6 @@
     <string name="app_name">StaffBrief</string>
     <string name="settings">Settings</string>
     <string name="add_serviceman">Add a serviceman</string>
+    <string name="edit_serviceman">Edit a serviceman</string>
+    <string name="back">Back</string>
 </resources>

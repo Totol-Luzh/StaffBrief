@@ -4,13 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,9 +31,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -56,7 +66,7 @@ fun Main(){
 
             composable(Routes.Home.route) { Home(navController) }
             composable(Routes.CreateSoldier.route) { CreateSoldier() }
-            composable(Routes.Soldier.route) { Soldier() }
+            composable(Routes.Soldier.route) { Soldier(navController) }
             composable(Routes.Settings.route) { Settings() }
         }
     }
@@ -139,10 +149,72 @@ fun CreateSoldier() {
 }
 
 @Composable
-fun Soldier() {
-    Text("Soldier Page", fontSize = 30.sp)
+fun Soldier(navController: NavController) {
+    Scaffold(
+        topBar = {
+            @OptIn(ExperimentalMaterial3Api::class)
+            TopAppBar(
+                title = { Text("Soldier", fontSize = 22.sp) },
+                navigationIcon = {
+                    IconButton(onClick = {navController.navigateUp()}) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )}},
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.DarkGray,
+                    titleContentColor = Color.LightGray,
+                    navigationIconContentColor = Color.LightGray,
+                    actionIconContentColor = Color.LightGray
+                )
+            )
+        })
+    { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            Row() {
+                Image(
+                    contentDescription = null,
+                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .size(130.dp)
+                        .clip(RoundedCornerShape(16.dp))
+
+                )
+
+                Text(
+                    text = "Иванов\nМаксим\nВалерьевич\nгв. рядовой\n28.05.2005",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(6.dp).fillMaxWidth()
+                )
+
+            }
+            Text(
+                text = "Общая информация о военнослужащем: образование и др.",
+                fontSize = 20.sp,
+                modifier = Modifier.padding(6.dp).fillMaxWidth()
+            )
+            RelativeCard()
+        }
+    }
 }
 
+@Composable
+fun RelativeCard(){
+    Card(
+                colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                ),
+                border = BorderStroke(1.dp, Color.Black),
+                modifier = Modifier
+                    .fillMaxWidth().height(100.dp).padding(6.dp)
+    ) {
+        Text(text = "Information about relative",
+            fontSize = 20.sp,
+            modifier = Modifier.padding(6.dp))
+    }
+}
 @Composable
 fun Settings() {
     Text("SettingsPage", fontSize = 30.sp)
