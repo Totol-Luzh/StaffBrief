@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
         tableName = "relatives",
-        indices = [Index(value = ["soldier_id"])],
+        indices = [Index(value = ["soldier_id"]), Index(value = ["person_id"])],
         foreignKeys = [
                     ForeignKey(
                                     entity = SoldiersEntity::class,

@@ -10,12 +10,6 @@ import androidx.room.PrimaryKey
 @Entity(
         tableName = "soldiers",
         foreignKeys = [
-                    ForeignKey(
-                                    entity = CategoriesEntity::class,
-                                    parentColumns = ["id"],
-                                    childColumns = ["category_id"],
-                                    onDelete = ForeignKey.CASCADE
-                    ),
             ForeignKey(
                             entity = PersonsEntity::class,
                             parentColumns = ["id"],
@@ -24,7 +18,6 @@ import androidx.room.PrimaryKey
             )
         ],
         indices = [
-            Index(value = ["category_id"]),
             Index(value = ["person_id"])
         ]
 )
@@ -33,11 +26,8 @@ data class SoldiersEntity(
         @ColumnInfo(name = "id")
         val soldierId: Long = 0,
 
-        @ColumnInfo(name = "category_id")
-        var categoryId: Long,
-
         @ColumnInfo(name = "person_id")
-        var personId: Long,
+        var personId: Long? = null,
 
         @ColumnInfo(name = "military_rank")
         var militaryRank: Rank,

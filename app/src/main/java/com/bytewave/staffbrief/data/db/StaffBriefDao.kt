@@ -10,6 +10,7 @@ import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersCategoriesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StaffBriefDao {
@@ -26,7 +27,7 @@ interface StaffBriefDao {
         @Update
         fun updateSoldier(soldier: SoldiersEntity): Int
         @Query("DELETE FROM soldiers WHERE id = :soldierId")
-        fun deleteSoldierById(soldierId: Long)
+        fun deleteSoldierById(soldierId: Long): Int
 
 
         @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -34,7 +35,7 @@ interface StaffBriefDao {
         @Update
         fun updateRelative(relative: RelativesEntity): Int
         @Query("DELETE FROM relatives WHERE id = :relativeId")
-        fun deleteRelativeById(relativeId: Long)
+        fun deleteRelativeById(relativeId: Long): Int
 
 
         @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -42,12 +43,14 @@ interface StaffBriefDao {
         @Update
         fun updateCategory(category: CategoriesEntity): Int
         @Query("DELETE FROM categories WHERE id = :categoryId")
-        fun deleteCategoryById(categoryId: Long)
+        fun deleteCategoryById(categoryId: Int): Int
+        @Query("SELECT * FROM categories")
+        fun getAllCategories(): Flow<List<CategoriesEntity>>
 
 
         @Insert(onConflict = OnConflictStrategy.ABORT)
         fun insertSoldiersCategories(soldCat: SoldiersCategoriesEntity): Long
         @Query("DELETE FROM soldiers_categories WHERE id = :soldierCategoryId")
-        fun deleteSoldierCategoryById(soldierCategoryId: Long)
+        fun deleteSoldierCategoryById(soldierCategoryId: Long): Int
 
 }
