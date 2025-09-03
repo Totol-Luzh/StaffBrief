@@ -19,7 +19,7 @@ interface StaffBriefDao {
         fun insertPerson(person: PersonsEntity): Long
         @Update
         fun updatePerson(person: PersonsEntity): Int
-        @Query("DELETE FROM soldiers WHERE id = :personId")
+        @Query("DELETE FROM persons WHERE id = :personId")
         fun deletePersonById(personId: Long)
 
         @Insert(onConflict = OnConflictStrategy.ABORT)

@@ -1,14 +1,21 @@
 package com.bytewave.staffbrief.domain.repository
 
 import com.bytewave.staffbrief.data.db.entities.CategoriesEntity
+import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersCategoriesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
+import com.bytewave.staffbrief.domain.model.Person
+import com.bytewave.staffbrief.domain.model.Soldier
 import kotlinx.coroutines.flow.Flow
 
 interface StaffBriefRepository {
-    suspend fun addSoldier(soldier: SoldiersEntity): Result<Long>
-    suspend fun updateSoldier(soldier: SoldiersEntity): Result<Int>
+    suspend fun addPerson(person: Person): Result<Long>
+    suspend fun updatePerson(person: PersonsEntity): Result<Int>
+    //suspend fun deletePerson(personId: Long): Result<Int>
+
+    suspend fun addSoldier(soldier: Soldier): Result<Long>
+    suspend fun updateSoldier(soldier: Soldier): Result<Int>
     suspend fun deleteSoldier(soldierId: Long): Result<Int>
 
     suspend fun addRelative(relative: RelativesEntity): Result<Long>

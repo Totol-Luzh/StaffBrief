@@ -27,7 +27,7 @@ data class SoldiersEntity(
         val soldierId: Long = 0,
 
         @ColumnInfo(name = "person_id")
-        var personId: Long? = null,
+        var personId: Long,
 
         @ColumnInfo(name = "military_rank")
         var militaryRank: Rank,

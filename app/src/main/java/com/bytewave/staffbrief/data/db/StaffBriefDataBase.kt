@@ -17,7 +17,7 @@ const val DATABASE_NAME = "staff_brief_room_database"
 
 @Database(
     entities = [PersonsEntity::class, SoldiersEntity::class, RelativesEntity::class, CategoriesEntity::class, SoldiersCategoriesEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(BitmapConverter::class)
