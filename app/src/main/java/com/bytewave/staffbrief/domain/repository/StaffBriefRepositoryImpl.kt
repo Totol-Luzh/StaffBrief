@@ -5,13 +5,14 @@ import com.bytewave.staffbrief.data.db.entities.CategoriesEntity
 import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersCategoriesEntity
-import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
+import com.bytewave.staffbrief.data.mappers.toDomain
 import com.bytewave.staffbrief.data.mappers.toEntity
 import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Soldier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : StaffBriefRepository {
@@ -133,5 +134,10 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
         }
     }
 
+    override fun getAllSoldierFullInfo(): Flow<List<Person>> {
+        return  staffBriefDao.getAllPersonBySoldier().map { list ->
+            list.map { it.toDomain() }
+        }
+    }
 
 }

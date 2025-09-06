@@ -10,6 +10,7 @@ import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersCategoriesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
+import com.bytewave.staffbrief.domain.model.SoldierFullInfo
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -52,5 +53,12 @@ interface StaffBriefDao {
         fun insertSoldiersCategories(soldCat: SoldiersCategoriesEntity): Long
         @Query("DELETE FROM soldiers_categories WHERE id = :soldierCategoryId")
         fun deleteSoldierCategoryById(soldierCategoryId: Long): Int
+
+        @Query("""
+            SELECT p.* FROM persons p
+            INNER JOIN soldiers s ON p.id = s.person_id
+        """)
+        fun getAllPersonBySoldier(): Flow<List<PersonsEntity>>
+
 
 }

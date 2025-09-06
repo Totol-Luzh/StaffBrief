@@ -1,12 +1,9 @@
 package com.bytewave.staffbrief.domain.use_case
 
 import android.util.Log
-import com.bytewave.staffbrief.data.db.entities.Rank
-import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
 import com.bytewave.staffbrief.domain.model.Soldier
 import com.bytewave.staffbrief.domain.repository.Result
 import com.bytewave.staffbrief.domain.repository.StaffBriefRepository
-import com.bytewave.staffbrief.domain.repository.StaffBriefRepositoryImpl
 
 
 interface AddSoldierUseCase{

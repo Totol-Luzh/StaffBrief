@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
@@ -19,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -27,9 +30,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
+import com.bytewave.staffbrief.domain.model.Person
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Home(navController: NavController) {
+fun Home(
+    navController: NavController,
+    viewModel: HomeViewModel = koinViewModel()
+) {
+    val soldiers by viewModel.soldiers.collectAsState()
+
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
@@ -67,8 +77,8 @@ fun Home(navController: NavController) {
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
-            items(count = 20) { itemId ->
-                SoldierCard(itemId) {id -> navController.navigate(Routes.Soldier.route)}
+            items(soldiers) { soldier ->
+                SoldierCard(soldier) {id -> navController.navigate(Routes.Soldier.route)}
 
             }
         }
@@ -77,7 +87,7 @@ fun Home(navController: NavController) {
 }
 
 @Composable
-fun SoldierCard(id: Int, navigateToSoldier: (soldierId :Int) -> Unit){
+fun SoldierCard(soldier: Person, navigateToSoldier: (soldierId :Long) -> Unit){
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -87,10 +97,10 @@ fun SoldierCard(id: Int, navigateToSoldier: (soldierId :Int) -> Unit){
         ),
         modifier = Modifier
             .fillMaxWidth().height(50.dp).padding(6.dp),
-        onClick = {navigateToSoldier(id)}
+        onClick = {navigateToSoldier(soldier.id)}
     ) {
         Text(
-            text = "Soldier $id",
+            text = "${soldier.id}, ${soldier.lastName} ${soldier.firstName} ${soldier.patronymic}",
             modifier = Modifier
                 .padding(8.dp),
             textAlign = TextAlign.Center,
