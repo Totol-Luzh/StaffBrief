@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -32,9 +33,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Soldier(navController: NavController) {
+fun Soldier(
+    personId: Long,
+    navController: NavController,
+    viewModel: SoldierScreenViewModel = koinViewModel<SoldierScreenViewModel>()
+) {
+    LaunchedEffect(personId) {
+        viewModel.loadSoldier(personId)
+    }
+    val soldier = viewModel.soldier.value
+
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
@@ -67,20 +78,25 @@ fun Soldier(navController: NavController) {
                         .clip(RoundedCornerShape(16.dp))
 
                 )
+                soldier?.let {
+                    Text(
+                        text = "${it.lastName}\n${it.firstName}\n${it.patronymic}\n${it.rank.russianName}\n${it.birthDate}",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(6.dp).fillMaxWidth()
+                    )
+                }
 
+
+            }
+            soldier?.let {
                 Text(
-                    text = "Иванов\nМаксим\nВалерьевич\nгв. рядовой\n28.05.2005",
+                    text = "${it.info}",
                     fontSize = 20.sp,
                     modifier = Modifier.padding(6.dp).fillMaxWidth()
                 )
-
+                RelativeCard()
             }
-            Text(
-                text = "Общая информация о военнослужащем: образование и др.",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(6.dp).fillMaxWidth()
-            )
-            RelativeCard()
+
         }
     }
 }

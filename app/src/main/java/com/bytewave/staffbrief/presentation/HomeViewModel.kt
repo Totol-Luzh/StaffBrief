@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(
-    private val getAllSoldierFullInfoUseCase: GetAllPersonBySoldierUseCase
+    private val getAllPersonBySoldierUseCase: GetAllPersonBySoldierUseCase
 ): ViewModel() {
-    val soldiers: StateFlow<List<Person>> = getAllSoldierFullInfoUseCase().stateIn(
+    val soldiers: StateFlow<List<Person>> = getAllPersonBySoldierUseCase().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()

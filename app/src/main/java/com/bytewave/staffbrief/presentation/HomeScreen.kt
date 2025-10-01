@@ -78,7 +78,7 @@ fun Home(
             modifier = Modifier.padding(innerPadding)
         ) {
             items(soldiers) { soldier ->
-                SoldierCard(soldier) {id -> navController.navigate(Routes.Soldier.route)}
+                SoldierCard(soldier) {id -> navController.navigate(Routes.Soldier.createRoute(id))}
 
             }
         }

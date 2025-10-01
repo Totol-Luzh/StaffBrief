@@ -59,6 +59,24 @@ interface StaffBriefDao {
             INNER JOIN soldiers s ON p.id = s.person_id
         """)
         fun getAllPersonBySoldier(): Flow<List<PersonsEntity>>
+        @Query("""
+        SELECT 
+            s.id AS soldierId,
+            s.person_id AS personId,
+            p.first_name AS firstName,
+            p.last_name AS lastName,
+            p.patronymic AS patronymic,
+            p.birth_date AS birthDate,
+            p.phone_number AS phoneNumber,
+            s.military_rank AS rank,
+            s.info AS info,
+            s.positive AS positive,
+            s.negative AS negative
+        FROM soldiers s
+        INNER JOIN persons p ON s.person_id = p.id
+        WHERE p.id = :personId
+        """)
+        suspend fun getFullSoldierInfoByPerson(personId: Long): SoldierFullInfo
 
 
 }

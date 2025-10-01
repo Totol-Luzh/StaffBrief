@@ -9,6 +9,7 @@ import com.bytewave.staffbrief.data.mappers.toDomain
 import com.bytewave.staffbrief.data.mappers.toEntity
 import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Soldier
+import com.bytewave.staffbrief.domain.model.SoldierFullInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -137,6 +138,15 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
     override fun getAllSoldierFullInfo(): Flow<List<Person>> {
         return  staffBriefDao.getAllPersonBySoldier().map { list ->
             list.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun getFullSoldierInfoByPerson(personId: Long): Result<SoldierFullInfo>  = withContext(
+        Dispatchers.IO){
+        try {
+            Result.Success(staffBriefDao.getFullSoldierInfoByPerson(personId))
+        } catch (e: Throwable) {
+            Result.Error(e)
         }
     }
 

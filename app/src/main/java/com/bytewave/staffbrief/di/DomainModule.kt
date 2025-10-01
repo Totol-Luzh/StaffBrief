@@ -17,9 +17,12 @@ import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.GetAllPersonBySoldierUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllSoldierFullInfoUseCaseImpl
+import com.bytewave.staffbrief.domain.use_case.GetFullSoldierInfoByPersonUseCase
+import com.bytewave.staffbrief.domain.use_case.GetFullSoldierInfoByPersonUseCaseImpl
 import com.bytewave.staffbrief.presentation.CategoryManagementViewModel
 import com.bytewave.staffbrief.presentation.CreateSoldierViewModel
 import com.bytewave.staffbrief.presentation.HomeViewModel
+import com.bytewave.staffbrief.presentation.SoldierScreenViewModel
 
 val domainModule = module {
     single<StaffBriefRepository> { StaffBriefRepositoryImpl(get()) }
@@ -31,8 +34,10 @@ val domainModule = module {
     factory<DeleteCategoryUseCase> { DeleteCategoryUseCaseImpl(get()) }
     factory<GetAllCategoriesUseCase> { GetAllCategoriesUseCaseImpl(get()) }
     factory<GetAllPersonBySoldierUseCase> { GetAllSoldierFullInfoUseCaseImpl(get()) }
+factory<GetFullSoldierInfoByPersonUseCase> { GetFullSoldierInfoByPersonUseCaseImpl(get()) }
 
     viewModel { CategoryManagementViewModel(get(), get(), get()) }
     viewModel { CreateSoldierViewModel(get(), get()) }
     viewModel { HomeViewModel( get()) }
+    viewModel { SoldierScreenViewModel( get()) }
 }
