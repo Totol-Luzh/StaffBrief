@@ -67,7 +67,7 @@ fun CategoryManagement(
                         verticalAlignment = Alignment.CenterVertically) {
                         Text(text = category.name)
                         IconButton(
-                            onClick = { viewModel.deleteCategory(categoryId = category.categoryId) }
+                            onClick = { viewModel.deleteCategory(categoryId = category.id) }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,

@@ -12,5 +12,6 @@ data class CategoriesEntity(
     @ColumnInfo (name = "id")
     val categoryId: Int,
     val name: String,
-    val priority: Byte
+    val priority: Byte,
+    val color: Int
 )

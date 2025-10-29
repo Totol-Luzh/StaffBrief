@@ -1,9 +1,10 @@
 package com.bytewave.staffbrief.presentation
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bytewave.staffbrief.data.db.entities.CategoriesEntity
+import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.use_case.AddCategoryUseCase
 import com.bytewave.staffbrief.domain.use_case.DeleteCategoryUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesUseCase
@@ -27,7 +28,7 @@ class CategoryManagementViewModel(
     val categoryPriority: StateFlow<Byte> = _categoryPriority.asStateFlow()
 
 
-    val categories: StateFlow<List<CategoriesEntity>> = getAllCategoriesUseCase().stateIn(
+    val categories: StateFlow<List<Category>> = getAllCategoriesUseCase().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
@@ -50,7 +51,7 @@ class CategoryManagementViewModel(
         if (name.isNotBlank()) {
             viewModelScope.launch {
                 try {
-                    val id = addCategoryUseCase(name, priority.value)
+                    val id = addCategoryUseCase(name, priority.value, Color.White)
                 } catch (e: Exception){
                     Log.e("Error Add Category", "${e.message}")
                 }

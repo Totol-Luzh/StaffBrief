@@ -1,6 +1,7 @@
 package com.bytewave.staffbrief.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +28,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -156,8 +164,39 @@ fun CreateSoldier(
                     .fillMaxWidth(),
                 label = { Text("Введите отрицательное о военнослужащем") }
             )
-            OutlinedButton(onClick = {viewModel.addSoldier()},
+            CategoryDropDownMenu(viewModel)
+            OutlinedButton(onClick = {viewModel.addSoldier()
+                                     navController.navigateUp() },
             ) { Text("Add Soldier",  fontSize = 16.sp) }
+        }
+    }
+}
+
+@Composable
+fun CategoryDropDownMenu(viewModel: CreateSoldierViewModel) {
+    var expanded by remember { mutableStateOf(false) }
+    val categories by viewModel.categoryWithIndex.collectAsState()
+    Box {
+        OutlinedButton(onClick = { expanded = !expanded },
+            ) {
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "")
+            Text("Открыть меню")
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category.first.name) },
+                    onClick = { viewModel.onChangeCategoryFlag(category.first, !category.second) },
+                    trailingIcon = {
+                        if (category.second)
+                            Icon(Icons.Outlined.Check, contentDescription = null)
+                    }
+                )
+            }
+
         }
     }
 }

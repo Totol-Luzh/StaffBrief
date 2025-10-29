@@ -27,5 +27,5 @@ data class SoldiersCategoriesEntity(
         @ColumnInfo(name = "soldier_id")
         var soldierId: Long,
         @ColumnInfo(name = "category_id")
-        var categoryId: Long
+        var categoryId: Int
 )

@@ -1,23 +1,25 @@
 package com.bytewave.staffbrief.domain.use_case
 
 import android.util.Log
-import com.bytewave.staffbrief.data.db.entities.CategoriesEntity
+import androidx.compose.ui.graphics.Color
+import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.repository.Result
 import com.bytewave.staffbrief.domain.repository.StaffBriefRepository
 
 interface AddCategoryUseCase{
-    suspend operator fun invoke(name: String, priority: Byte): Int
+    suspend operator fun invoke(name: String, priority: Byte, color: Color): Int
 }
 
 class AddCategoryUseCaseImpl(
     private val repository: StaffBriefRepository
 ) : AddCategoryUseCase {
-    override suspend fun invoke(name: String, priority: Byte): Int {
+    override suspend fun invoke(name: String, priority: Byte, color: Color): Int {
         when(val result = repository.addCategory(
-            CategoriesEntity(
-                categoryId = 0,
+            Category(
+                id = 0,
                 name = name,
-                priority = priority
+                priority = priority,
+                color = color
             )
         )){
            is Result.Success -> {

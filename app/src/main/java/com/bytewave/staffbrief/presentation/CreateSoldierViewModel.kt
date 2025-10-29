@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bytewave.staffbrief.data.db.entities.Rank
+import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Soldier
 import com.bytewave.staffbrief.domain.use_case.AddPersonUseCase
 import com.bytewave.staffbrief.domain.use_case.AddSoldierUseCase
+import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
+import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,8 +18,22 @@ import kotlinx.coroutines.launch
 
 class CreateSoldierViewModel(
     private val addPersonUseCase: AddPersonUseCase,
-    private val addSoldierUseCase: AddSoldierUseCase
+    private val addSoldierUseCase: AddSoldierUseCase,
+    private val getAllCategoriesCurrentUseCase: GetAllCategoriesCurrentUseCase,
+    private val insertSoldiersCategoriesUseCase: InsertSoldiersCategoriesUseCase
 ) : ViewModel() {
+
+    private val _categoryWithIndex = MutableStateFlow<List<Pair<Category, Boolean>>>(emptyList())
+    val categoryWithIndex: StateFlow<List<Pair<Category, Boolean>>> = _categoryWithIndex
+
+    init {
+        viewModelScope.launch {
+            _categoryWithIndex.value = getAllCategoriesCurrentUseCase().map {
+                element ->
+                Pair(element, false)
+            }
+        }
+    }
 
     private val _firstName = MutableStateFlow("")
     val firstName: StateFlow<String> = _firstName.asStateFlow()
@@ -87,7 +104,7 @@ class CreateSoldierViewModel(
                             phoneNumber = if (_phoneNumber.value.isNotBlank()) _phoneNumber.value else null
                         )
                     )
-                    addSoldierUseCase(
+                    val soldierId = addSoldierUseCase(
                         Soldier(
                             personId = personId,
                             militaryRank = Rank.SOLDIER,
@@ -97,9 +114,22 @@ class CreateSoldierViewModel(
                             negative = if (_negative.value.isNotBlank()) _negative.value else null
                         )
                     )
+
+                    insertSoldiersCategoriesUseCase(soldierId, categoryWithIndex.value)
+
                 } catch (e: Exception){
                     Log.e("Error Add Person", "${e.message}")
                 }
+            }
+        }
+    }
+
+    fun onChangeCategoryFlag(category: Category, flag: Boolean) {
+        _categoryWithIndex.value = categoryWithIndex.value.map { item ->
+            if (item.first.name == category.name) {
+                item.copy(category, flag)
+            } else {
+                item
             }
         }
     }

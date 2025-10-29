@@ -1,17 +1,16 @@
 package com.bytewave.staffbrief.domain.repository
 
-import com.bytewave.staffbrief.data.db.entities.CategoriesEntity
-import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
-import com.bytewave.staffbrief.data.db.entities.SoldiersCategoriesEntity
+import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Soldier
+import com.bytewave.staffbrief.domain.model.SoldierCategory
 import com.bytewave.staffbrief.domain.model.SoldierFullInfo
 import kotlinx.coroutines.flow.Flow
 
 interface StaffBriefRepository {
     suspend fun addPerson(person: Person): Result<Long>
-    suspend fun updatePerson(person: PersonsEntity): Result<Int>
+    suspend fun updatePerson(person: Person): Result<Int>
     //suspend fun deletePerson(personId: Long): Result<Int>
 
     suspend fun addSoldier(soldier: Soldier): Result<Long>
@@ -22,12 +21,14 @@ interface StaffBriefRepository {
     suspend fun updateRelative(relative: RelativesEntity): Result<Int>
     suspend fun deleteRelative(relativeId: Long): Result<Int>
 
-    suspend fun addCategory(category: CategoriesEntity): Result<Int>
-    suspend fun updateCategory(category: CategoriesEntity): Result<Int>
+    suspend fun addCategory(category: Category): Result<Int>
+    suspend fun updateCategory(category: Category): Result<Int>
     suspend fun deleteCategory(categoryId: Int): Result<Int>
-    fun getAllCategories(): Flow<List<CategoriesEntity>>
+    fun getAllCategories(): Flow<List<Category>>
+    suspend fun getAllCategoriesCurrent(): Result<List<Category>>
 
-    suspend fun addSoldiersCategory(soldiersCategory: SoldiersCategoriesEntity): Result<Long>
+    suspend fun insertSoldiersCategory(soldiersCategory: List<SoldierCategory>): Result<Boolean>
+    suspend fun deleteRemovedCategories(soldierId: Long, categoryIds: List<Int>): Result<Int>
     suspend fun deleteSoldierCategory(soldierCategoryId: Long): Result<Int>
 
     fun getAllSoldierFullInfo(): Flow<List<Person>>

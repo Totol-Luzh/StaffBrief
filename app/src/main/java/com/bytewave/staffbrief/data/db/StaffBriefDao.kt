@@ -47,10 +47,14 @@ interface StaffBriefDao {
         fun deleteCategoryById(categoryId: Int): Int
         @Query("SELECT * FROM categories")
         fun getAllCategories(): Flow<List<CategoriesEntity>>
+        @Query("SELECT * FROM categories")
+        fun getAllCategoriesCurrent(): List<CategoriesEntity>
 
 
-        @Insert(onConflict = OnConflictStrategy.ABORT)
-        fun insertSoldiersCategories(soldCat: SoldiersCategoriesEntity): Long
+        @Insert(onConflict = OnConflictStrategy.IGNORE)
+        fun insertSoldiersCategories(soldierCategory: List<SoldiersCategoriesEntity>)
+        @Query("DELETE FROM soldiers_categories WHERE soldier_id = :soldierId AND category_id NOT IN (:categoryIds)")
+        suspend fun deleteRemovedCategories(soldierId: Long, categoryIds: List<Int>): Int
         @Query("DELETE FROM soldiers_categories WHERE id = :soldierCategoryId")
         fun deleteSoldierCategoryById(soldierCategoryId: Long): Int
 
