@@ -1,10 +1,8 @@
 package com.bytewave.staffbrief.presentation
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bytewave.staffbrief.data.db.entities.Rank
-import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Soldier
 import com.bytewave.staffbrief.domain.use_case.AddPersonUseCase
@@ -21,19 +19,7 @@ class CreateSoldierViewModel(
     private val addSoldierUseCase: AddSoldierUseCase,
     private val getAllCategoriesCurrentUseCase: GetAllCategoriesCurrentUseCase,
     private val insertSoldiersCategoriesUseCase: InsertSoldiersCategoriesUseCase
-) : ViewModel() {
-
-    private val _categoryWithIndex = MutableStateFlow<List<Pair<Category, Boolean>>>(emptyList())
-    val categoryWithIndex: StateFlow<List<Pair<Category, Boolean>>> = _categoryWithIndex
-
-    init {
-        viewModelScope.launch {
-            _categoryWithIndex.value = getAllCategoriesCurrentUseCase().map {
-                element ->
-                Pair(element, false)
-            }
-        }
-    }
+) : BaseViewModel(getAllCategoriesCurrentUseCase) {
 
     private val _firstName = MutableStateFlow("")
     val firstName: StateFlow<String> = _firstName.asStateFlow()
@@ -114,9 +100,7 @@ class CreateSoldierViewModel(
                             negative = if (_negative.value.isNotBlank()) _negative.value else null
                         )
                     )
-
                     insertSoldiersCategoriesUseCase(soldierId, categoryWithIndex.value)
-
                 } catch (e: Exception){
                     Log.e("Error Add Person", "${e.message}")
                 }
@@ -124,14 +108,5 @@ class CreateSoldierViewModel(
         }
     }
 
-    fun onChangeCategoryFlag(category: Category, flag: Boolean) {
-        _categoryWithIndex.value = categoryWithIndex.value.map { item ->
-            if (item.first.name == category.name) {
-                item.copy(category, flag)
-            } else {
-                item
-            }
-        }
-    }
 
 }

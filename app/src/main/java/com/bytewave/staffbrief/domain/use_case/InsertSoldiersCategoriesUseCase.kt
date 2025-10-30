@@ -23,7 +23,6 @@ class InsertSoldiersCategoriesUseCaseImpl(
         when(val result = repository.deleteRemovedCategories(soldierId, listCategoryId)){
             is Result.Success -> {
                 Log.d("Delete SoldierCategory", "Success")
-                return true
             }
             is Result.Error -> {
                 Log.d("Delete SoldierCategory", "Error")

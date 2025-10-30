@@ -58,11 +58,41 @@ interface StaffBriefDao {
         @Query("DELETE FROM soldiers_categories WHERE id = :soldierCategoryId")
         fun deleteSoldierCategoryById(soldierCategoryId: Long): Int
 
+//        @Query("""
+//            SELECT p.* FROM persons p
+//            INNER JOIN soldiers s ON p.id = s.person_id
+//        """)
         @Query("""
-            SELECT p.* FROM persons p
+            SELECT DISTINCT p.*
+            FROM persons p
             INNER JOIN soldiers s ON p.id = s.person_id
+            INNER JOIN soldiers_categories sc ON s.id = sc.soldier_id
+            WHERE 
+                (sc.category_id IN (:categoriesIds))
+                AND (
+                    :searchString IS NULL 
+                    OR p.first_name LIKE '%' || :searchString || '%'
+                    OR p.last_name LIKE '%' || :searchString || '%'
+                    OR p.patronymic LIKE '%' || :searchString || '%'
+                    OR s.info LIKE '%' || :searchString || '%'
+                )
+            ORDER BY p.last_name, p.first_name
         """)
-        fun getAllPersonBySoldier(): Flow<List<PersonsEntity>>
+        fun getAllPersonBySoldier(categoriesIds: List<Int>, searchString: String): Flow<List<PersonsEntity>>
+        @Query("""
+            SELECT DISTINCT p.*
+            FROM persons p
+            INNER JOIN soldiers s ON p.id = s.person_id
+            WHERE (
+                :searchString IS NULL 
+                OR p.first_name LIKE '%' || :searchString || '%'
+                OR p.last_name LIKE '%' || :searchString || '%'
+                OR p.patronymic LIKE '%' || :searchString || '%'
+                OR s.info LIKE '%' || :searchString || '%'
+            )
+            ORDER BY p.last_name, p.first_name
+        """)
+        fun getAllPersonsBySoldierWithoutFilter(searchString: String?): Flow<List<PersonsEntity>>
         @Query("""
         SELECT 
             s.id AS soldierId,

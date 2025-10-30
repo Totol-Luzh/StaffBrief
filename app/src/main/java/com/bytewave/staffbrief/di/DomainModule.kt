@@ -23,6 +23,7 @@ import com.bytewave.staffbrief.domain.use_case.GetFullSoldierInfoByPersonUseCase
 import com.bytewave.staffbrief.domain.use_case.GetFullSoldierInfoByPersonUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCase
 import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCaseImpl
+import com.bytewave.staffbrief.presentation.BaseViewModel
 import com.bytewave.staffbrief.presentation.CategoryManagementViewModel
 import com.bytewave.staffbrief.presentation.CreateSoldierViewModel
 import com.bytewave.staffbrief.presentation.HomeViewModel
@@ -42,8 +43,9 @@ val domainModule = module {
     factory<GetAllPersonBySoldierUseCase> { GetAllSoldierFullInfoUseCaseImpl(get()) }
     factory<GetFullSoldierInfoByPersonUseCase> { GetFullSoldierInfoByPersonUseCaseImpl(get()) }
 
+    viewModel { BaseViewModel(get()) }
     viewModel { CategoryManagementViewModel(get(), get(), get()) }
     viewModel { CreateSoldierViewModel(get(), get(), get(), get()) }
-    viewModel { HomeViewModel( get()) }
+    viewModel { HomeViewModel( get(), get()) }
     viewModel { SoldierScreenViewModel( get()) }
 }

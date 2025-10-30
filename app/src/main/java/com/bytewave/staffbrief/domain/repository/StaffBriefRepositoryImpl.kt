@@ -1,6 +1,8 @@
 package com.bytewave.staffbrief.domain.repository
 
+import android.util.Log
 import com.bytewave.staffbrief.data.db.StaffBriefDao
+import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.mappers.toDomain
 import com.bytewave.staffbrief.data.mappers.toEntity
@@ -132,6 +134,7 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
 
     override suspend fun insertSoldiersCategory(soldiersCategory: List<SoldierCategory>): Result<Boolean> = withContext(Dispatchers.IO) {
         try {
+            Log.d("Insert Category Soldier", "$soldiersCategory")
             staffBriefDao.insertSoldiersCategories(soldiersCategory.map{
                 it.toEntity()
             })
@@ -157,8 +160,14 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
         }
     }
 
-    override fun getAllSoldierFullInfo(): Flow<List<Person>> {
-        return  staffBriefDao.getAllPersonBySoldier().map { list ->
+    override fun getAllSoldierFullInfo(categoriesIds: List<Int>, searchQuery: String): Flow<List<Person>> {
+        return  staffBriefDao.getAllPersonBySoldier(categoriesIds, searchQuery).map { list ->
+            list.map { it.toDomain() }
+        }
+    }
+
+    override fun getAllSoldierWithoutFilter(searchQuery: String): Flow<List<Person>> {
+        return  staffBriefDao.getAllPersonsBySoldierWithoutFilter(searchQuery).map { list ->
             list.map { it.toDomain() }
         }
     }

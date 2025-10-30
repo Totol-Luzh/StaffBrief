@@ -1,9 +1,11 @@
 package com.bytewave.staffbrief.presentation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -11,6 +13,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,8 +41,9 @@ fun Home(
     navController: NavController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+    viewModel.updateCategoryList()
     val soldiers by viewModel.soldiers.collectAsState()
-
+    val categories by viewModel.categoryWithIndex.collectAsState()
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
@@ -74,15 +78,32 @@ fun Home(
         }
 
     ) {innerPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            items(soldiers) { soldier ->
-                SoldierCard(soldier) {id -> navController.navigate(Routes.Soldier.createRoute(id))}
+            LazyRow {
+                items(categories) { category ->
+                    FilterChip(
+                        modifier = Modifier.padding(2.dp),
+                        selected = category.second,
+                        onClick = { viewModel.onChangeCategoryFlag(category.first, !category.second)},
+                        label = { Text(category.first.name) }
+                    )
+                }
+            }
+            LazyColumn {
+                items(soldiers) { soldier ->
+                    SoldierCard(soldier) { id ->
+                        navController.navigate(
+                            Routes.Soldier.createRoute(
+                                id
+                            )
+                        )
+                    }
 
+                }
             }
         }
-
     }
 }
 

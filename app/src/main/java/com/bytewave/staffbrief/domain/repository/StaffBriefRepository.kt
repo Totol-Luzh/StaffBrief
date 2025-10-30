@@ -1,5 +1,6 @@
 package com.bytewave.staffbrief.domain.repository
 
+import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.model.Person
@@ -31,7 +32,8 @@ interface StaffBriefRepository {
     suspend fun deleteRemovedCategories(soldierId: Long, categoryIds: List<Int>): Result<Int>
     suspend fun deleteSoldierCategory(soldierCategoryId: Long): Result<Int>
 
-    fun getAllSoldierFullInfo(): Flow<List<Person>>
+    fun getAllSoldierFullInfo(categoriesIds: List<Int>, searchQuery: String): Flow<List<Person>>
+    fun getAllSoldierWithoutFilter(searchQuery: String): Flow<List<Person>>
     suspend fun getFullSoldierInfoByPerson(personId: Long): Result<SoldierFullInfo>
 }
 
