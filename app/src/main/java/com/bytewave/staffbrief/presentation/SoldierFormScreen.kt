@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
+import com.bytewave.staffbrief.data.db.entities.Rank
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -67,6 +69,13 @@ fun CreateSoldier(
                             Icons.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )}},
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.addSoldier()
+                        navController.navigateUp() }) {
+                        Icon(Icons.Default.Done, "Сохранить анкету")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.DarkGray,
                     titleContentColor = Color.LightGray,
@@ -118,6 +127,7 @@ fun CreateSoldier(
                 singleLine = true,
                 label = { Text("Введите отчество") }
             )
+            RankDropDownMenu(viewModel)
             OutlinedTextField(
                 value = soldier.birthDate ?: "",
                 onValueChange = { viewModel.onBirthDateChange(it) },
@@ -162,13 +172,37 @@ fun CreateSoldier(
                 label = { Text("Введите отрицательное о военнослужащем") }
             )
             CategoryDropDownMenu(viewModel)
-            OutlinedButton(onClick = {viewModel.addSoldier()
-                                     navController.navigateUp() },
-            ) { Text("Add Soldier",  fontSize = 16.sp) }
         }
     }
 }
+@Composable
+fun RankDropDownMenu(viewModel: SoldierFormViewModel) {
+    var expanded by remember { mutableStateOf(false) }
+    val soldier by viewModel.soldierState.collectAsState()
+    Box {
+        OutlinedButton(onClick = { expanded = !expanded },
+        ) {
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "Воинское звание")
+            Text(soldier.rank.russianName)
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            Rank.entries.forEach { rank ->
+                if(soldier.rank != rank)
+                    DropdownMenuItem(
+                        text = { Text(rank.russianName) },
+                        onClick = {
+                            viewModel.onRankChange(rank)
+                            expanded = false
+                        }
+                    )
+            }
 
+        }
+    }
+}
 @Composable
 fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
     var expanded by remember { mutableStateOf(false) }
@@ -176,8 +210,8 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
     Box {
         OutlinedButton(onClick = { expanded = !expanded },
             ) {
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "")
-            Text("Открыть меню")
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "Выбрать категории")
+            Text("Выбрать категории")
         }
         DropdownMenu(
             expanded = expanded,

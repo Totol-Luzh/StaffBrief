@@ -47,11 +47,12 @@ interface StaffBriefDao {
         fun deleteCategoryById(categoryId: Int): Int
         @Query("SELECT * FROM categories")
         fun getAllCategories(): Flow<List<CategoriesEntity>>
-        @Query("SELECT * FROM categories")
+        @Query("SELECT * FROM categories ORDER BY priority")
         fun getAllCategoriesCurrent(): List<CategoriesEntity>
         @Query("SELECT c.* FROM categories c " +
                 "JOIN soldiers_categories sc ON c.id = sc.category_id " +
-                "WHERE sc.soldier_id = :soldierId")
+                "WHERE sc.soldier_id = :soldierId " +
+                "ORDER BY c.priority")
         fun getCategoryBySoldier(soldierId: Long): List<CategoriesEntity>
 
         @Insert(onConflict = OnConflictStrategy.IGNORE)

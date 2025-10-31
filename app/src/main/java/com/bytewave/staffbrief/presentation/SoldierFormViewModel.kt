@@ -59,6 +59,10 @@ class SoldierFormViewModel(
         _soldierState.value = _soldierState.value.copy(negative = newValue)
     }
 
+    fun onRankChange(newValue: Rank){
+        _soldierState.value = _soldierState.value.copy(rank = newValue)
+    }
+
     fun addSoldier(){
         if(soldierState.value.lastName.isNotBlank() && soldierState.value.firstName.isNotBlank() && soldierState.value.patronymic.isNotBlank()){
             viewModelScope.launch {
@@ -74,13 +78,12 @@ class SoldierFormViewModel(
                     val soldier = Soldier(
                         soldierId = soldierState.value.soldierId,
                         personId = soldierState.value.personId,
-                        militaryRank = Rank.SOLDIER,
+                        militaryRank = soldierState.value.rank,
                         photo = null,
                         info = if (soldierState.value.info.isNullOrBlank()) null else soldierState.value.info,
                         positive = if (soldierState.value.positive.isNullOrBlank()) null else soldierState.value.positive,
                         negative = if (soldierState.value.negative.isNullOrBlank()) null else soldierState.value.negative
                     )
-                    //Log.d("Tag check 22", "$person/n $soldier")
                     if(soldierState.value.personId == 0L) {
                         soldier.personId = addPersonUseCase(person)
                         val soldierId = addSoldierUseCase(soldier)
