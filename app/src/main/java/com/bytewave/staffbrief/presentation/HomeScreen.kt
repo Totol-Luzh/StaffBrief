@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -44,6 +48,7 @@ fun Home(
     viewModel.updateCategoryList()
     val soldiers by viewModel.soldiers.collectAsState()
     val categories by viewModel.categoryWithIndex.collectAsState()
+    val query by viewModel.searchQuery.collectAsState()
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
@@ -81,6 +86,17 @@ fun Home(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
+            TextField(
+                value = query,
+                onValueChange = { viewModel.onChangeSearchQuery(it) },
+                placeholder = { Text("Поиск...") },
+                leadingIcon = { Icon(Icons.Default.Search, "Поиск")},
+                trailingIcon = { IconButton(onClick = {viewModel.clearSearchQuery()}) {
+                    Icon(Icons.Default.Clear, contentDescription = "Очистить")
+                }},
+                modifier = Modifier.padding(4.dp).fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp)
+            )
             LazyRow {
                 items(categories) { category ->
                     FilterChip(

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllPersonBySoldierUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,9 +17,10 @@ class HomeViewModel(
     private val getAllPersonBySoldierUseCase: GetAllPersonBySoldierUseCase,
     private val getAllCategoriesCurrentUseCase: GetAllCategoriesCurrentUseCase
 ): BaseViewModel(getAllCategoriesCurrentUseCase) {
-    private val _searchString = MutableStateFlow("")
-    val searchQuery:  StateFlow<String> = _searchString.asStateFlow()
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery:  StateFlow<String> = _searchQuery.asStateFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val soldiers: StateFlow<List<Person>> =
         combine(categoryWithIndex, searchQuery) { categories, query ->
             categories to query
@@ -33,6 +35,9 @@ class HomeViewModel(
             )
 
     fun onChangeSearchQuery(query: String) {
-        _searchString.value = query
+        _searchQuery.value = query
+    }
+    fun clearSearchQuery(){
+        _searchQuery.value = ""
     }
 }
