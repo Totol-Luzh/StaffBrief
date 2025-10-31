@@ -14,16 +14,30 @@ class AddSoldierUseCaseImpl(
     private val repository: StaffBriefRepository
 ) : AddSoldierUseCase {
     override suspend fun invoke(soldier: Soldier): Long {
-        when(val  result = repository.addSoldier(soldier)){
-            is Result.Success -> {
-                Log.d("Add Soldier", "Success")
-                return result.data
+        if(soldier.soldierId == 0L) {
+            return when (val result = repository.addSoldier(soldier)) {
+                is Result.Success -> {
+                    Log.d("Add Soldier", "Success")
+                    result.data
+                }
+
+                is Result.Error -> {
+                    Log.d("Add Soldier", "Error")
+                    -1
+                }
             }
-            is Result.Error -> {
-                Log.d("Add Soldier", "Error")
-                return -1
+        } else {
+            return when (val result = repository.updateSoldier(soldier)) {
+                is Result.Success -> {
+                    Log.d("Add Soldier", "Success")
+                    result.data.toLong()
+                }
+
+                is Result.Error -> {
+                    Log.d("Add Soldier", "Error")
+                    -1
+                }
             }
         }
-
     }
 }

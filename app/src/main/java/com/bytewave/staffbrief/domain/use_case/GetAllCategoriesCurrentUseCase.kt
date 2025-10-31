@@ -7,21 +7,26 @@ import com.bytewave.staffbrief.domain.repository.StaffBriefRepository
 import kotlinx.coroutines.flow.Flow
 
 interface GetAllCategoriesCurrentUseCase{
-    suspend operator fun invoke(): List<Category>
+    suspend operator fun invoke(soldierId: Long?): List<Category>
 }
 
 class GetAllCategoriesCurrentUseCaseImpl(
     private  val repository: StaffBriefRepository
 ) : GetAllCategoriesCurrentUseCase {
-    override suspend fun invoke(): List<Category> {
-        val result = repository.getAllCategoriesCurrent()
+    override suspend fun invoke(soldierId: Long?): List<Category> {
+
+        val result = if(soldierId == null) {
+            repository.getAllCategoriesCurrent()
+        } else {
+            repository.getCategoriesBySoldier(soldierId)
+        }
         return when(result){
             is Result.Success -> {
-                Log.d("Get current categories", "Success")
+                Log.d("Get categories", "Success")
                 result.data
             }
             is Result.Error -> {
-                Log.d("Get current categories", "Error")
+                Log.d("Get categories", "Error")
                 emptyList()
             }
         }

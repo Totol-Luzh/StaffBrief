@@ -46,17 +46,14 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CreateSoldier(
+    personId: Long,
     navController: NavController,
-    viewModel: CreateSoldierViewModel = koinViewModel()
+    viewModel: SoldierFormViewModel = koinViewModel()
 ) {
-    val firstName by viewModel.firstName.collectAsState()
-    val lastName by viewModel.lastName.collectAsState()
-    val patronymic by viewModel.patronymic.collectAsState()
-    val birthDate by viewModel.birthDate.collectAsState()
-    val phoneNumber by viewModel.phoneNumber.collectAsState()
-    val info by viewModel.info.collectAsState()
-    val positive by viewModel.positive.collectAsState()
-    val negative by viewModel.negative.collectAsState()
+    if(personId != 0L){
+        viewModel.loadSoldier(personId)
+    }
+    val soldier by viewModel.soldierState.collectAsState()
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -95,7 +92,7 @@ fun CreateSoldier(
             )
 
             OutlinedTextField(
-                value = lastName,
+                value = soldier.lastName,
                 onValueChange = { viewModel.onLastNameChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -104,7 +101,7 @@ fun CreateSoldier(
                 label = { Text("Введите фамилию") }
             )
             OutlinedTextField(
-                value = firstName,
+                value = soldier.firstName,
                 onValueChange = { viewModel.onFirstNameChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -113,7 +110,7 @@ fun CreateSoldier(
                 label = { Text("Введите имя") }
             )
             OutlinedTextField(
-                value = patronymic,
+                value = soldier.patronymic,
                 onValueChange = { viewModel.onPatronymicChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -122,7 +119,7 @@ fun CreateSoldier(
                 label = { Text("Введите отчество") }
             )
             OutlinedTextField(
-                value = birthDate,
+                value = soldier.birthDate ?: "",
                 onValueChange = { viewModel.onBirthDateChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -131,7 +128,7 @@ fun CreateSoldier(
                 label = { Text("Введите дату рождения: dd.mm.yyyy") }
             )
             OutlinedTextField(
-                value = phoneNumber,
+                value = soldier.phoneNumber ?: "",
                 onValueChange = { viewModel.onPhoneNumberChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -141,7 +138,7 @@ fun CreateSoldier(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             OutlinedTextField(
-                value = info,
+                value = soldier.info ?: "",
                 onValueChange = { viewModel.onInfoChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -149,7 +146,7 @@ fun CreateSoldier(
                 label = { Text("Введите общую информацию") }
             )
             OutlinedTextField(
-                value = positive,
+                value = soldier.positive ?: "",
                 onValueChange = { viewModel.onPositiveChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -157,7 +154,7 @@ fun CreateSoldier(
                 label = { Text("Введите положительное о военнослужащем") }
             )
             OutlinedTextField(
-                value = negative,
+                value = soldier.negative ?: "",
                 onValueChange = { viewModel.onNegativeChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
@@ -173,7 +170,7 @@ fun CreateSoldier(
 }
 
 @Composable
-fun CategoryDropDownMenu(viewModel: CreateSoldierViewModel) {
+fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
     var expanded by remember { mutableStateOf(false) }
     val categories by viewModel.categoryWithIndex.collectAsState()
     Box {

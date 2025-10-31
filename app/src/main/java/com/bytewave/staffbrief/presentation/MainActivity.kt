@@ -38,7 +38,12 @@ fun Main(){
         NavHost(navController = navController, startDestination = Routes.Home.route, modifier = Modifier.weight(1f)) {
 
             composable(Routes.Home.route) { Home(navController) }
-            composable(Routes.CreateSoldier.route) { CreateSoldier(navController) }
+            composable(Routes.CreateSoldier.route,
+                arguments = listOf(navArgument("personId") {type = NavType.LongType})
+                ) {backStackEntry ->
+                val personId = backStackEntry.arguments?.getLong("personId") ?: 0L
+                CreateSoldier(personId, navController)
+            }
             composable(
                 route = Routes.Soldier.route,
                 arguments = listOf(navArgument("personId") { type = NavType.LongType })
@@ -54,7 +59,9 @@ fun Main(){
 sealed class Routes(val route: String) {
 
     object Home : Routes("home")
-    object CreateSoldier : Routes("create_soldier")
+    object CreateSoldier : Routes("create_soldier/{personId}"){
+        fun createRoute(personId: Long) = "create_soldier/$personId"
+    }
     object Soldier : Routes("soldier/{personId}"){
         fun createRoute(personId: Long) = "soldier/$personId"
     }

@@ -25,7 +25,7 @@ import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCase
 import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCaseImpl
 import com.bytewave.staffbrief.presentation.BaseViewModel
 import com.bytewave.staffbrief.presentation.CategoryManagementViewModel
-import com.bytewave.staffbrief.presentation.CreateSoldierViewModel
+import com.bytewave.staffbrief.presentation.SoldierFormViewModel
 import com.bytewave.staffbrief.presentation.HomeViewModel
 import com.bytewave.staffbrief.presentation.SoldierScreenViewModel
 
@@ -45,7 +45,7 @@ val domainModule = module {
 
     viewModel { BaseViewModel(get()) }
     viewModel { CategoryManagementViewModel(get(), get(), get()) }
-    viewModel { CreateSoldierViewModel(get(), get(), get(), get()) }
+    viewModel { SoldierFormViewModel(get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel( get(), get()) }
     viewModel { SoldierScreenViewModel( get()) }
 }

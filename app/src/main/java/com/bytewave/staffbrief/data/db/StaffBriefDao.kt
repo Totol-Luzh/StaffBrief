@@ -49,7 +49,10 @@ interface StaffBriefDao {
         fun getAllCategories(): Flow<List<CategoriesEntity>>
         @Query("SELECT * FROM categories")
         fun getAllCategoriesCurrent(): List<CategoriesEntity>
-
+        @Query("SELECT c.* FROM categories c " +
+                "JOIN soldiers_categories sc ON c.id = sc.category_id " +
+                "WHERE sc.soldier_id = :soldierId")
+        fun getCategoryBySoldier(soldierId: Long): List<CategoriesEntity>
 
         @Insert(onConflict = OnConflictStrategy.IGNORE)
         fun insertSoldiersCategories(soldierCategory: List<SoldiersCategoriesEntity>)
@@ -58,10 +61,6 @@ interface StaffBriefDao {
         @Query("DELETE FROM soldiers_categories WHERE id = :soldierCategoryId")
         fun deleteSoldierCategoryById(soldierCategoryId: Long): Int
 
-//        @Query("""
-//            SELECT p.* FROM persons p
-//            INNER JOIN soldiers s ON p.id = s.person_id
-//        """)
         @Query("""
             SELECT DISTINCT p.*
             FROM persons p

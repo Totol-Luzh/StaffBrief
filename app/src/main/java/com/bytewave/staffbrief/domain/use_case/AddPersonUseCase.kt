@@ -13,14 +13,27 @@ class AddPersonUseCaseImpl(
     private val repository: StaffBriefRepository
 ) : AddPersonUseCase {
     override suspend fun invoke(person: Person): Long {
-        when(val  result = repository.addPerson(person)){
-            is Result.Success -> {
-                Log.d("Add Person", "Success")
-                return result.data
+        if(person.id == 0L){
+            return when(val  result = repository.insertPerson(person)){
+                is Result.Success -> {
+                    Log.d("Add Person", "Success")
+                    result.data
+                }
+                is Result.Error -> {
+                    Log.d("Add Person", "Error")
+                    -1
+                }
             }
-            is Result.Error -> {
-                Log.d("Add Person", "Error")
-                return -1
+        } else {
+            return when(val  result = repository.updatePerson(person)){
+                is Result.Success -> {
+                    Log.d("Add Person", "Success")
+                    result.data.toLong()
+                }
+                is Result.Error -> {
+                    Log.d("Add Person", "Error")
+                    -1
+                }
             }
         }
 

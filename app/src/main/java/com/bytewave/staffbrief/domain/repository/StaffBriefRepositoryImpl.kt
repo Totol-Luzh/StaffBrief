@@ -2,7 +2,6 @@ package com.bytewave.staffbrief.domain.repository
 
 import android.util.Log
 import com.bytewave.staffbrief.data.db.StaffBriefDao
-import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.mappers.toDomain
 import com.bytewave.staffbrief.data.mappers.toEntity
@@ -19,7 +18,7 @@ import kotlinx.coroutines.withContext
 
 class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : StaffBriefRepository {
 
-    override suspend fun addPerson(person: Person): Result<Long> = withContext(Dispatchers.IO) {
+    override suspend fun insertPerson(person: Person): Result<Long> = withContext(Dispatchers.IO) {
         try {
             Result.Success(staffBriefDao.insertPerson(person.toEntity()))
         } catch (e: Throwable) {
@@ -130,6 +129,14 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
                 }
             }
             .flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getCategoriesBySoldier(soldierId: Long): Result<List<Category>> = withContext(Dispatchers.IO) {
+        try {
+            Result.Success(staffBriefDao.getCategoryBySoldier(soldierId).map { it.toDomain() })
+        } catch (e: Throwable) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun insertSoldiersCategory(soldiersCategory: List<SoldierCategory>): Result<Boolean> = withContext(Dispatchers.IO) {

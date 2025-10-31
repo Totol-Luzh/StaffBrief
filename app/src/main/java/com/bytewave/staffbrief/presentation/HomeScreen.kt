@@ -74,7 +74,7 @@ fun Home(
                         contentDescription = stringResource(R.string.add_serviceman)
                     )
                 },
-                onClick = { navController.navigate(Routes.CreateSoldier.route) })
+                onClick = { navController.navigate(Routes.CreateSoldier.createRoute(0L)) })
         }
 
     ) {innerPadding ->

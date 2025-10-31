@@ -1,6 +1,5 @@
 package com.bytewave.staffbrief.domain.repository
 
-import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.model.Person
@@ -10,7 +9,7 @@ import com.bytewave.staffbrief.domain.model.SoldierFullInfo
 import kotlinx.coroutines.flow.Flow
 
 interface StaffBriefRepository {
-    suspend fun addPerson(person: Person): Result<Long>
+    suspend fun insertPerson(person: Person): Result<Long>
     suspend fun updatePerson(person: Person): Result<Int>
     //suspend fun deletePerson(personId: Long): Result<Int>
 
@@ -27,6 +26,7 @@ interface StaffBriefRepository {
     suspend fun deleteCategory(categoryId: Int): Result<Int>
     fun getAllCategories(): Flow<List<Category>>
     suspend fun getAllCategoriesCurrent(): Result<List<Category>>
+    suspend fun getCategoriesBySoldier(soldierId: Long): Result<List<Category>>
 
     suspend fun insertSoldiersCategory(soldiersCategory: List<SoldierCategory>): Result<Boolean>
     suspend fun deleteRemovedCategories(soldierId: Long, categoryIds: List<Int>): Result<Int>

@@ -11,12 +11,12 @@ import kotlinx.coroutines.launch
 open class BaseViewModel(
     private val getAllCategoriesCurrentUseCase: GetAllCategoriesCurrentUseCase
 ) : ViewModel() {
-    private val _categoryWithIndex = MutableStateFlow<List<Pair<Category, Boolean>>>(emptyList())
+    protected val _categoryWithIndex = MutableStateFlow<List<Pair<Category, Boolean>>>(emptyList())
     val categoryWithIndex: StateFlow<List<Pair<Category, Boolean>>> = _categoryWithIndex
 
     init {
         viewModelScope.launch {
-            _categoryWithIndex.value = getAllCategoriesCurrentUseCase().map {
+            _categoryWithIndex.value = getAllCategoriesCurrentUseCase(null).map {
                     element ->
                 Pair(element, false)
             }
@@ -33,7 +33,7 @@ open class BaseViewModel(
     }
     fun updateCategoryList(){
         viewModelScope.launch {
-            _categoryWithIndex.value = getAllCategoriesCurrentUseCase().map {
+            _categoryWithIndex.value = getAllCategoriesCurrentUseCase(null).map {
                     element ->
                 Pair(element, false)
             }
