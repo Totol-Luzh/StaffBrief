@@ -24,9 +24,11 @@ class CategoryManagementViewModel(
     private val _categoryName = MutableStateFlow("")
     val categoryName: StateFlow<String> = _categoryName.asStateFlow()
 
-    private val _categoryPriority = MutableStateFlow<Byte>(10)
-    val categoryPriority: StateFlow<Byte> = _categoryPriority.asStateFlow()
+    private val _categoryPriority = MutableStateFlow<Byte?>(10)
+    val categoryPriority: StateFlow<Byte?> = _categoryPriority.asStateFlow()
 
+    private val _confirmDelete = MutableStateFlow<Pair<Category?, Boolean>>(Pair(null, false))
+    val confirmDelete: StateFlow<Pair<Category?, Boolean>> = _confirmDelete.asStateFlow()
 
     val categories: StateFlow<List<Category>> = getAllCategoriesUseCase().stateIn(
         viewModelScope,
@@ -39,31 +41,41 @@ class CategoryManagementViewModel(
     }
 
     fun onPriorityChange(newValue: String) {
+        if (newValue.isEmpty()) {
+            _categoryPriority.value = null
+            return
+        }
         val number = newValue.toIntOrNull()
-        if (number != null && number in 1 ..Byte.MAX_VALUE) {
+        if (number != null && number in 1..Byte.MAX_VALUE) {
             _categoryPriority.value = number.toByte()
         }
     }
 
-    fun addCategory(){
+    fun onConfirmChange(category: Category?, confirmation: Boolean){
+        _confirmDelete.value = Pair(category, confirmation)
+    }
+
+    fun addCategory(): Boolean {
         val name = _categoryName.value
-        val priority = _categoryPriority
-        if (name.isNotBlank()) {
+        val priority = _categoryPriority.value
+        return if (name.isNotBlank() && priority != null) {
             viewModelScope.launch {
                 try {
-                    val id = addCategoryUseCase(name, priority.value, Color.White)
+                    addCategoryUseCase(name, priority, Color.White)
                 } catch (e: Exception){
                     Log.e("Error Add Category", "${e.message}")
                 }
             }
             _categoryName.value = ""
             _categoryPriority.value = 10
-        }
+            true
+        } else false
     }
 
     fun deleteCategory(categoryId: Int){
         viewModelScope.launch {
             try {
+                _confirmDelete.value = Pair(null, false)
                 val id = deleteCategoryUseCase(categoryId)
             } catch (e: Exception){
                 Log.e("Error Delete Category", "${e.message}")

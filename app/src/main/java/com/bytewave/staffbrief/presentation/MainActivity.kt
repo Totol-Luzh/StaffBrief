@@ -51,7 +51,7 @@ fun Main(){
                 val personId = backStackEntry.arguments?.getLong("personId") ?: 0L
                 Soldier(personId, navController)
             }
-            composable(Routes.CategoryManagement.route) { CategoryManagement() }
+            composable(Routes.CategoryManagement.route) { CategoryManagement(navController) }
         }
     }
 }

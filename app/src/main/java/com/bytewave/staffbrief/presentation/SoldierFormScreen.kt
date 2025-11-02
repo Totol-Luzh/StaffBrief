@@ -66,7 +66,7 @@ fun CreateSoldier(
                 navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
-                            Icons.Filled.ArrowBack,
+                            Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )}},
                 actions = {
