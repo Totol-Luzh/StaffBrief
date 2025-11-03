@@ -1,5 +1,6 @@
 package com.bytewave.staffbrief.domain.model
 
+import android.graphics.Bitmap
 import com.bytewave.staffbrief.data.db.entities.Rank
 
 data class SoldierFullInfo(
@@ -10,6 +11,7 @@ data class SoldierFullInfo(
     val patronymic: String = "",
     val birthDate: String? = null,
     val phoneNumber: String? = null,
+    val photo: Bitmap? = null,
     val rank: Rank = Rank.SOLDIER,
     val info: String? = null,
     val positive: String? = null,

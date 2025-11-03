@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="StaffBriefApp">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-10-30T18:42:57.529942500Z">
+        <DropdownSelection timestamp="2025-11-03T14:01:34.445881700Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\serge\.android\avd\Pixel_9.avd" />

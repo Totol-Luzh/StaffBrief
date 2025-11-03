@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -73,16 +74,18 @@ fun Soldier(
     { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Row() {
-                Image(
-                    contentDescription = null,
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .padding(6.dp)
-                        .size(130.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                soldier?.photo?.let {
+                    Image(
+                        contentDescription = null,
+                        bitmap = it.asImageBitmap(),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(6.dp)
+                            .size(130.dp)
+                            .clip(RoundedCornerShape(16.dp))
 
-                )
+                    )
+                }
                 soldier?.let {
                     Text(
                         text = "${it.lastName}\n${it.firstName}\n${it.patronymic}\n${it.rank.russianName}\n${it.birthDate}",

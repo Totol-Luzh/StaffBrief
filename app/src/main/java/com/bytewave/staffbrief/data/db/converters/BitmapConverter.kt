@@ -47,4 +47,16 @@ object BitmapConverter {
             null
         }
     }
+    fun uriToBitmap(context: Context, uri: Uri): Bitmap? {
+        return try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+    fun resourceToBitmap(context: Context, resId: Int): Bitmap {
+        return BitmapFactory.decodeResource(context.resources, resId)
+    }
 }

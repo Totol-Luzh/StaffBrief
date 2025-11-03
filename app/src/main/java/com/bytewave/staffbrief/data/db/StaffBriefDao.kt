@@ -102,6 +102,7 @@ interface StaffBriefDao {
             p.patronymic AS patronymic,
             p.birth_date AS birthDate,
             p.phone_number AS phoneNumber,
+            s.photo AS photo,
             s.military_rank AS rank,
             s.info AS info,
             s.positive AS positive,
