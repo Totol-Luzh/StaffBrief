@@ -2,11 +2,11 @@ package com.bytewave.staffbrief.domain.repository
 
 import android.util.Log
 import com.bytewave.staffbrief.data.db.StaffBriefDao
-import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.mappers.toDomain
 import com.bytewave.staffbrief.data.mappers.toEntity
 import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.model.Person
+import com.bytewave.staffbrief.domain.model.Relative
 import com.bytewave.staffbrief.domain.model.Soldier
 import com.bytewave.staffbrief.domain.model.SoldierCategory
 import com.bytewave.staffbrief.domain.model.SoldierFullInfo
@@ -66,25 +66,34 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
         }
     }
 
-    override suspend fun addRelative(relative: RelativesEntity): Result<Long> = withContext(Dispatchers.IO) {
+    override suspend fun insertRelative(relative: Relative): Result<Long> = withContext(Dispatchers.IO) {
         try {
-            Result.Success(staffBriefDao.insertRelative(relative))
+            Result.Success(staffBriefDao.insertRelative(relative.toEntity()))
         } catch (e: Throwable) {
             Result.Error(e)
         }
     }
 
-    override suspend fun updateRelative(relative: RelativesEntity): Result<Int> = withContext(Dispatchers.IO) {
+    override suspend fun updateRelative(relative: Relative): Result<Int> = withContext(Dispatchers.IO) {
         try {
-            Result.Success(staffBriefDao.updateRelative(relative))
+            Result.Success(staffBriefDao.updateRelative(relative.toEntity()))
         } catch (e: Throwable) {
             Result.Error(e)
         }
     }
 
-    override suspend fun deleteRelative(relativeId: Long): Result<Int> = withContext(Dispatchers.IO) {
+    override suspend fun deleteRelatives(soldierId: Long, relativeIds: List<Long>): Result<Boolean> = withContext(Dispatchers.IO) {
         try {
-            Result.Success(staffBriefDao.deleteRelativeById(relativeId))
+            staffBriefDao.deleteRelativesNotInList(soldierId, relativeIds)
+            Result.Success(true)
+        } catch (e: Throwable) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun getRelativesBySoldier(soldierId: Long): Result<List<Relative>> = withContext(Dispatchers.IO){
+        try {
+            Result.Success(staffBriefDao.getRelativesBySoldier(soldierId).map { it.toDomain()})
         } catch (e: Throwable) {
             Result.Error(e)
         }

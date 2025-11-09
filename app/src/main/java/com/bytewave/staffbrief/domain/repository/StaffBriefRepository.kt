@@ -1,8 +1,8 @@
 package com.bytewave.staffbrief.domain.repository
 
-import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.model.Person
+import com.bytewave.staffbrief.domain.model.Relative
 import com.bytewave.staffbrief.domain.model.Soldier
 import com.bytewave.staffbrief.domain.model.SoldierCategory
 import com.bytewave.staffbrief.domain.model.SoldierFullInfo
@@ -17,9 +17,10 @@ interface StaffBriefRepository {
     suspend fun updateSoldier(soldier: Soldier): Result<Int>
     suspend fun deleteSoldier(soldierId: Long): Result<Int>
 
-    suspend fun addRelative(relative: RelativesEntity): Result<Long>
-    suspend fun updateRelative(relative: RelativesEntity): Result<Int>
-    suspend fun deleteRelative(relativeId: Long): Result<Int>
+    suspend fun insertRelative(relative: Relative): Result<Long>
+    suspend fun updateRelative(relative: Relative): Result<Int>
+    suspend fun deleteRelatives(soldierId: Long, relativeIds: List<Long>): Result<Boolean>
+    suspend fun getRelativesBySoldier(soldierId: Long): Result<List<Relative>>
 
     suspend fun addCategory(category: Category): Result<Int>
     suspend fun updateCategory(category: Category): Result<Int>

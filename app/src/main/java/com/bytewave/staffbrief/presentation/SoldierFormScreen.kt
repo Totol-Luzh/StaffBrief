@@ -3,12 +3,10 @@ package com.bytewave.staffbrief.presentation
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,10 +14,11 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -31,9 +30,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -56,6 +57,7 @@ import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
 import com.bytewave.staffbrief.data.db.converters.BitmapConverter
 import com.bytewave.staffbrief.data.db.entities.Rank
+import com.bytewave.staffbrief.domain.model.Relative
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -68,9 +70,10 @@ fun CreateSoldier(
         viewModel.loadSoldier(personId)
     }
     val soldier by viewModel.soldierState.collectAsState()
-    val scrollState = rememberScrollState()
+    val relatives by viewModel.relatives.collectAsState()
+    val scrollState = rememberLazyListState()
     val context = LocalContext.current
-    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+    val pickMedia = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         uri?.let {
             Log.d("PhotoPicker", "Selected URI: $uri")
             val bitmapImage = BitmapConverter.uriToBitmap(context, it)
@@ -107,14 +110,16 @@ fun CreateSoldier(
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0))
     { innerPadding ->
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .consumeWindowInsets(innerPadding)
-            .systemBarsPadding()
-            .imePadding()
-            .padding(2.dp)
-            .verticalScroll(scrollState)
+        LazyColumn(
+            state = scrollState,
+            modifier = Modifier
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding)
+                .systemBarsPadding()
+                .imePadding()
+                .padding(2.dp)
         ) {
+            item {
             soldier.photo?.let {
                 Image(
                     contentDescription = null,
@@ -131,12 +136,16 @@ fun CreateSoldier(
             }
             OutlinedButton(
                 onClick = {
-                    if(soldier.photo == null) pickMedia.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
+                    if (soldier.photo == null) pickMedia.launch(
+                        PickVisualMediaRequest(
+                            PickVisualMedia.ImageOnly
+                        )
+                    )
                     else viewModel.onPhotoChange(null)
                 }
 
             ) {
-                if(soldier.photo == null) Text("Добавить фото") else Text("Удалить фото")
+                if (soldier.photo == null) Text("Добавить фото") else Text("Удалить фото")
             }
 
             OutlinedTextField(
@@ -212,6 +221,17 @@ fun CreateSoldier(
             )
             CategoryDropDownMenu(viewModel)
         }
+        itemsIndexed(relatives){index, relative ->
+            CustomRelativeCard(relative, index,viewModel)
+        }
+        item {
+            OutlinedButton(
+                onClick = { viewModel.addRelative() },
+            ) {
+                Text("Добавить родственника")
+            }
+        }
+        }
     }
 }
 @Composable
@@ -268,5 +288,41 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
             }
 
         }
+    }
+}
+
+@Composable
+fun CustomRelativeCard(relative: Relative,
+                       index: Int,
+                       viewModel: SoldierFormViewModel){
+    OutlinedCard(Modifier.padding(4.dp)) {
+        TextField(
+            value = relative.fullName,
+            onValueChange = {viewModel.updateRelative(index, relative.copy(fullName = it))},
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxWidth(),
+            placeholder = { Text("ФИО родственника")}
+        )
+        TextField(
+            value = relative.kinship,
+            onValueChange = {viewModel.updateRelative(index, relative.copy(kinship = it))},
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxWidth(),
+            placeholder = { Text("Кем приходится")}
+        )
+        TextField(
+            value = relative.info,
+            onValueChange = {viewModel.updateRelative(index, relative.copy(info = it))},
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxWidth(),
+            placeholder = { Text("Дополнительная информация")}
+        )
+        OutlinedButton(
+            onClick = {viewModel.deleteRelativeAt(index)},
+            modifier = Modifier.padding(2.dp)
+        ) {Text("Удалить родственника")}
     }
 }

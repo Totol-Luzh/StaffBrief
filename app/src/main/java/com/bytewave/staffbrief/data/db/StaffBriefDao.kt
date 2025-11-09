@@ -35,8 +35,10 @@ interface StaffBriefDao {
         fun insertRelative(relative: RelativesEntity): Long
         @Update
         fun updateRelative(relative: RelativesEntity): Int
-        @Query("DELETE FROM relatives WHERE id = :relativeId")
-        fun deleteRelativeById(relativeId: Long): Int
+        @Query("DELETE FROM relatives WHERE soldier_id = :soldierId AND id NOT IN (:relativeIds)")
+        fun deleteRelativesNotInList(soldierId: Long, relativeIds: List<Long>)
+        @Query("SELECT * FROM relatives WHERE soldier_id = :soldierId")
+        fun getRelativesBySoldier(soldierId: Long): List<RelativesEntity>
 
 
         @Insert(onConflict = OnConflictStrategy.ABORT)

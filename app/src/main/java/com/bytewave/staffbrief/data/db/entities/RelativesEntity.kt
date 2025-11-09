@@ -8,20 +8,14 @@ import androidx.room.PrimaryKey
 
 @Entity(
         tableName = "relatives",
-        indices = [Index(value = ["soldier_id"]), Index(value = ["person_id"])],
+        indices = [Index(value = ["soldier_id"])],
         foreignKeys = [
                     ForeignKey(
                                     entity = SoldiersEntity::class,
                                     parentColumns =["id"],
                                     childColumns = ["soldier_id"],
                                     onDelete = ForeignKey.CASCADE
-),
-            ForeignKey(
-                            entity = PersonsEntity::class,
-                            parentColumns = ["id"],
-                            childColumns = ["person_id"],
-                            onDelete = ForeignKey.CASCADE
-)
+                    )
         ]
 )
 data class RelativesEntity(
@@ -32,9 +26,10 @@ data class RelativesEntity(
         @ColumnInfo(name = "soldier_id")
         var soldierId: Long,
 
-        @ColumnInfo(name = "person_id")
-        var personId: Long,
+        @ColumnInfo(name = "full_name")
+        var fullName: String,
 
-        @ColumnInfo(name = "kinship")
-        var kinship: String? = null
+        var kinship: String,
+
+        var info: String
 )
