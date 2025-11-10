@@ -65,7 +65,7 @@ fun Soldier(
                         )}},
                 actions = {
                     IconButton(onClick = {navController.navigate(Routes.CreateSoldier.createRoute(personId))}) {
-                        Icon(Icons.Default.Edit, contentDescription = "Редактировать анкету")}
+                        Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.edit_soldier))}
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.DarkGray,
@@ -102,11 +102,11 @@ fun Soldier(
 
                 }
                 soldier?.let {
-                    CustomText("День рождения", it.birthDate)
-                    CustomText("Номер телефона", it.phoneNumber)
-                    CustomText("Общая информация", it.info)
-                    CustomText("Положительное", it.positive)
-                    CustomText("Отрицательное", it.negative)
+                    CustomText(stringResource(R.string.birth_date), it.birthDate)
+                    CustomText(stringResource(R.string.phone_number), it.phoneNumber)
+                    CustomText(stringResource(R.string.general_info), it.info)
+                    CustomText(stringResource(R.string.positive), it.positive)
+                    CustomText(stringResource(R.string.negative), it.negative)
 
                 }
             }
@@ -155,8 +155,8 @@ fun RelativeCard(relative: Relative){
         modifier = Modifier
             .fillMaxWidth().padding(6.dp)
     ) {
-        CustomText("ФИО", relative.fullName)
-        CustomText("Родство", relative.kinship)
-        CustomText("Информация", relative.info)
+        CustomText(stringResource(R.string.full_name), relative.fullName)
+        CustomText(stringResource(R.string.kinship), relative.kinship)
+        CustomText(stringResource(R.string.general_info), relative.info)
     }
 }

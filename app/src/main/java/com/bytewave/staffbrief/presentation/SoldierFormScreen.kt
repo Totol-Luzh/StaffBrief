@@ -86,7 +86,7 @@ fun CreateSoldier(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text("Soldier", fontSize = 22.sp) },
+                title = { Text(stringResource(R.string.soldier_screen), fontSize = 22.sp) },
                 navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
@@ -97,7 +97,7 @@ fun CreateSoldier(
                     IconButton(onClick = {
                         viewModel.addSoldier()
                         navController.navigateUp() }) {
-                        Icon(Icons.Default.Done, "Сохранить анкету")
+                        Icon(Icons.Default.Done, stringResource(R.string.save_form))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -145,7 +145,7 @@ fun CreateSoldier(
                 }
 
             ) {
-                if (soldier.photo == null) Text("Добавить фото") else Text("Удалить фото")
+                if (soldier.photo == null) Text(stringResource(R.string.add_photo)) else Text(stringResource(R.string.delete_photo))
             }
 
             OutlinedTextField(
@@ -155,7 +155,7 @@ fun CreateSoldier(
                     .padding(2.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                label = { Text("Введите фамилию") }
+                label = { Text(stringResource(R.string.last_name)) }
             )
             OutlinedTextField(
                 value = soldier.firstName,
@@ -164,7 +164,7 @@ fun CreateSoldier(
                     .padding(2.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                label = { Text("Введите имя") }
+                label = { Text(stringResource(R.string.first_name)) }
             )
             OutlinedTextField(
                 value = soldier.patronymic,
@@ -173,7 +173,7 @@ fun CreateSoldier(
                     .padding(2.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                label = { Text("Введите отчество") }
+                label = { Text(stringResource(R.string.patronymic)) }
             )
             RankDropDownMenu(viewModel)
             OutlinedTextField(
@@ -183,7 +183,7 @@ fun CreateSoldier(
                     .padding(2.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                label = { Text("Введите дату рождения: dd.mm.yyyy") }
+                label = { Text(stringResource(R.string.birth_date_extended)) }
             )
             OutlinedTextField(
                 value = soldier.phoneNumber ?: "",
@@ -192,7 +192,7 @@ fun CreateSoldier(
                     .padding(2.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                label = { Text("Введите номер телефона") },
+                label = { Text(stringResource(R.string.phone_number)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             OutlinedTextField(
@@ -201,7 +201,7 @@ fun CreateSoldier(
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
-                label = { Text("Введите общую информацию") }
+                label = { Text(stringResource(R.string.general_info)) }
             )
             OutlinedTextField(
                 value = soldier.positive ?: "",
@@ -209,7 +209,7 @@ fun CreateSoldier(
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
-                label = { Text("Введите положительное о военнослужащем") }
+                label = { Text(stringResource(R.string.positive_extended)) }
             )
             OutlinedTextField(
                 value = soldier.negative ?: "",
@@ -217,7 +217,7 @@ fun CreateSoldier(
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
-                label = { Text("Введите отрицательное о военнослужащем") }
+                label = { Text(stringResource(R.string.negative_extended)) }
             )
             CategoryDropDownMenu(viewModel)
         }
@@ -228,7 +228,7 @@ fun CreateSoldier(
             OutlinedButton(
                 onClick = { viewModel.addRelative() },
             ) {
-                Text("Добавить родственника")
+                Text(stringResource(R.string.add_relative))
             }
         }
         }
@@ -241,7 +241,7 @@ fun RankDropDownMenu(viewModel: SoldierFormViewModel) {
     Box {
         OutlinedButton(onClick = { expanded = !expanded },
         ) {
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "Воинское звание")
+            Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.rank))
             Text(soldier.rank.russianName)
         }
         DropdownMenu(
@@ -269,8 +269,8 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
     Box {
         OutlinedButton(onClick = { expanded = !expanded },
             ) {
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "Выбрать категории")
-            Text("Выбрать категории")
+            Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.choose_categories))
+            Text(stringResource(R.string.choose_categories))
         }
         DropdownMenu(
             expanded = expanded,
@@ -282,7 +282,7 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
                     onClick = { viewModel.onChangeCategoryFlag(category.first, !category.second) },
                     trailingIcon = {
                         if (category.second)
-                            Icon(Icons.Outlined.Check, contentDescription = null)
+                            Icon(Icons.Outlined.Check, contentDescription = stringResource(R.string.selected))
                     }
                 )
             }
@@ -302,7 +302,7 @@ fun CustomRelativeCard(relative: Relative,
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth(),
-            placeholder = { Text("ФИО родственника")}
+            placeholder = { Text(stringResource(R.string.full_name_extended))}
         )
         TextField(
             value = relative.kinship,
@@ -310,7 +310,7 @@ fun CustomRelativeCard(relative: Relative,
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth(),
-            placeholder = { Text("Кем приходится")}
+            placeholder = { Text(stringResource(R.string.kinship_extended))}
         )
         TextField(
             value = relative.info,
@@ -318,11 +318,11 @@ fun CustomRelativeCard(relative: Relative,
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth(),
-            placeholder = { Text("Дополнительная информация")}
+            placeholder = { Text(stringResource(R.string.general_info))}
         )
         OutlinedButton(
             onClick = {viewModel.deleteRelativeAt(index)},
             modifier = Modifier.padding(2.dp)
-        ) {Text("Удалить родственника")}
+        ) {Text(stringResource(R.string.delete_relative))}
     }
 }

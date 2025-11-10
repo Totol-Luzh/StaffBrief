@@ -1,7 +1,50 @@
 <resources>
     <string name="app_name">StaffBrief</string>
+
+    <string name="home_screen">Home</string>
+    <string name="search_query">Search ...</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
     <string name="settings">Settings</string>
-    <string name="add_serviceman">Add a serviceman</string>
-    <string name="edit_serviceman">Edit a serviceman</string>
+    <string name="add_soldier">Add a soldier</string>
+
+    <string name="edit_soldier">Edit the form</string>
     <string name="back">Back</string>
+    <string name="full_name">Full name</string>
+    <string name="kinship">Kinship</string>
+    <string name="general_info">General info</string>
+    <string name="birth_date">Date of birth</string>
+    <string name="phone_number">Phone number</string>
+    <string name="positive">Positive</string>
+    <string name="negative">Negative</string>
+
+    <string name="soldier_screen">Soldier</string>
+    <string name="save_form">Save form</string>
+    <string name="add_photo">Add photo</string>
+    <string name="delete_photo">Delete photo</string>
+    <string name="last_name">Last name</string>
+    <string name="first_name">First name</string>
+    <string name="patronymic">Patronymic</string>
+    <string name="birth_date_extended">Birthday in the format dd.mm.yyyy</string>
+    <string name="positive_extended">Positive about the soldier</string>
+    <string name="negative_extended">Negative about the soldier</string>
+    <string name="add_relative">Add relative</string>
+    <string name="rank">Rank</string>
+    <string name="choose_categories">Choose the categories</string>
+    <string name="selected">Selected</string>
+    <string name="full_name_extended">Full name of a relative</string>
+    <string name="kinship_extended">By whom do I have to</string>
+    <string name="delete_relative">Delete relative</string>
+
+    <string name="deleting">Deleting</string>
+    <string name="confirm_delete">Do you really want to delete the category</string>
+    <string name="category_name">Category name</string>
+    <string name="priority">Category priority from 1 to 127</string>
+    <string name="priority_info">The priority affects the order in which categories are displayed on the home screen</string>
+    <string name="add_category">Add category</string>
+    <string name="delete_category">Delete category</string>
+    <string name="toast_category_priority">Fill in the fields: Category name and Category Priority</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+
 </resources>

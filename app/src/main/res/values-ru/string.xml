@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Картотека</string>
+
+    <string name="home_screen">Главная</string>
+    <string name="settings">Настройки</string>
+    <string name="add_soldier">Добавить военнослужащего</string>
+    <string name="search_query">Поиск ...</string>
+    <string name="search">Поиск</string>
+    <string name="clear">Очистить</string>
+
+    <string name="edit_soldier">Редактировать анкету</string>
+    <string name="back">Назад</string>
+    <string name="full_name">ФИО</string>
+    <string name="kinship">Родство</string>
+    <string name="general_info">Общая информация</string>
+    <string name="birth_date">Дата рождения</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="positive">Положительное</string>
+    <string name="negative">Отрицательное</string>
+
+    <string name="soldier_screen">Военнослужащий</string>
+    <string name="save_form">Сохранить анкету</string>
+    <string name="add_photo">Добавить фото</string>
+    <string name="delete_photo">Удалить фото</string>
+    <string name="last_name">Фамилия</string>
+    <string name="first_name">Имя</string>
+    <string name="patronymic">Отчество</string>
+    <string name="birth_date_extended">Дата рождения в формате дд.мм.гггг</string>
+    <string name="positive_extended">Положительное о военнослужащем</string>
+    <string name="negative_extended">Отрицательное о военнослужащем</string>
+    <string name="add_relative">Добавить родственника</string>
+    <string name="rank">Воинское тело</string>
+    <string name="choose_categories">Выбрать категории</string>
+    <string name="selected">Выбранный</string>
+    <string name="full_name_extended">ФИО родственника</string>
+    <string name="kinship_extended">Кем приходится</string>
+    <string name="delete_relative">Удалить родственника</string>
+
+    <string name="deleting">Удаление</string>
+    <string name="confirm_delete">Вы действительно хотите удалить категорию</string>
+    <string name="category_name">Название категории</string>
+    <string name="priority">Приоритет категории от 1 до 127</string>
+    <string name="priority_info">Приоритет влияет на порядок отображения категорий на главном экране</string>
+    <string name="add_category">Добавить категорию</string>
+    <string name="delete_category">Удалить категорию</string>
+    <string name="toast_category_priority">Заполните поля: Название категории и Приоритет категории</string>
+    <string name="yes">Да</string>
+    <string name="no">Отмена</string>
+
+</resources>

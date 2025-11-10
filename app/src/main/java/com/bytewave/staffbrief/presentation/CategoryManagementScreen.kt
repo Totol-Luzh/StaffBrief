@@ -79,8 +79,8 @@ fun CategoryManagement(
             val context = LocalContext.current
             if(confirm.second)
                 ConfirmAlertDialog(
-                    dialogTitle = "Удаление",
-                    dialogText = "Вы действительно хотите удалить категорию",
+                    dialogTitle = stringResource(R.string.deleting),
+                    dialogText = stringResource(R.string.confirm_delete),
                     onConfirmation = {
                         confirm.first?.let{
                             viewModel.deleteCategory(it.id) }
@@ -91,25 +91,25 @@ fun CategoryManagement(
                 modifier = Modifier.fillMaxWidth(),
                 value = name,
                 onValueChange = { viewModel.onCategoryNameChange(it) },
-                label = { Text("Название категории") }
+                label = { Text(stringResource(R.string.category_name)) }
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = (priority ?: "").toString() ,
                 onValueChange = { viewModel.onPriorityChange(it) },
-                label = { Text("Приоритет категории от 1 до 127 (Byte)") },
+                label = { Text(stringResource(R.string.priority)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 trailingIcon = {
                     IconButton(onClick = {
                         Toast.makeText(
                             context,
-                            "Приоритет влияет на порядок отображения категорий на главном экране",
+                            context.getString(R.string.priority_info),
                             Toast.LENGTH_LONG
                         ).show()
                     }) {
                         Icon(
                             Icons.Filled.Info,
-                            contentDescription = "Приоритет влияет на порядок отображения категорий на главном экране"
+                            contentDescription = stringResource(R.string.priority_info)
                         )
                     }
                 }
@@ -119,12 +119,12 @@ fun CategoryManagement(
                     if(!viewModel.addCategory())
                         Toast.makeText(
                             context,
-                            "Заполните поля: Название категории и Приоритет категории",
+                            context.getString(R.string.toast_category_priority),
                             Toast.LENGTH_LONG
                         ).show()
 
                           },
-            ) { Text("Add Category", fontSize = 16.sp) }
+            ) { Text(stringResource(R.string.add_category), fontSize = 16.sp) }
             LazyColumn {
                 items(categories) { category ->
                     OutlinedCard(
@@ -142,7 +142,7 @@ fun CategoryManagement(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
-                                    contentDescription = "Удалить категорию"
+                                    contentDescription = stringResource(R.string.delete_category)
                                 )
                             }
                         }
@@ -166,12 +166,12 @@ fun ConfirmAlertDialog(dialogTitle: String ,
         },
         confirmButton = {
             TextButton(onClick = { onConfirmation() }) {
-                Text(text = "Да" )
+                Text(text = stringResource(R.string.yes) )
             }
         },
         dismissButton = {
             TextButton(onClick = { onDismissRequest() }) {
-                Text(text = "Отмена" )
+                Text(text = stringResource(R.string.no) )
             }
         },
         title = {

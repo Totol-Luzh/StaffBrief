@@ -53,7 +53,7 @@ fun Home(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text("Home", fontSize = 22.sp) },
+                title = { Text(stringResource(id = R.string.home_screen), fontSize = 22.sp) },
                 actions = {
                     IconButton(onClick = { navController.navigate(Routes.CategoryManagement.route) }) {
                         Icon(
@@ -76,7 +76,7 @@ fun Home(
                 content = {
                     Icon(
                         Icons.Filled.Add,
-                        contentDescription = stringResource(R.string.add_serviceman)
+                        contentDescription = stringResource(R.string.add_soldier)
                     )
                 },
                 onClick = { navController.navigate(Routes.CreateSoldier.createRoute(0L)) })
@@ -89,10 +89,10 @@ fun Home(
             TextField(
                 value = query,
                 onValueChange = { viewModel.onChangeSearchQuery(it) },
-                placeholder = { Text("Поиск...") },
-                leadingIcon = { Icon(Icons.Default.Search, "Поиск")},
+                placeholder = { Text(stringResource(id = R.string.search_query)) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search))},
                 trailingIcon = { IconButton(onClick = {viewModel.clearSearchQuery()}) {
-                    Icon(Icons.Default.Clear, contentDescription = "Очистить")
+                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
                 }},
                 modifier = Modifier.padding(4.dp).fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
