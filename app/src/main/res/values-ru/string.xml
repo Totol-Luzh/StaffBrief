@@ -45,6 +45,12 @@
     <string name="delete_category">Удалить категорию</string>
     <string name="toast_category_priority">Заполните поля: Название категории и Приоритет категории</string>
     <string name="yes">Да</string>
-    <string name="no">Отмена</string>
+    <string name="cancel">Отмена</string>
+    <string name="info">Дополнительная информация</string>
+    <string name="reset_color">Сбросить цвет</string>
+    <string name="category_management">Управление категориями</string>
+    <string name="toast_category_color">Цвет категории</string>
+    <string name="edit_category">Изменить категорию</string>
+    <string name="save_category">Сохранить категорию</string>
 
 </resources>

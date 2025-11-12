@@ -1,34 +1,47 @@
 package com.bytewave.staffbrief.presentation
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,106 +52,224 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
+import com.github.skydoves.colorpicker.compose.AlphaTile
+import com.github.skydoves.colorpicker.compose.HsvColorPicker
+import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryManagement(
     navController: NavController,
     viewModel: CategoryManagementViewModel = koinViewModel()
 ) {
     val categories by viewModel.categories.collectAsState()
-    val name by viewModel.categoryName.collectAsState()
-    val priority by viewModel.categoryPriority.collectAsState()
+    val category by viewModel.category.collectAsState()
     val confirm by viewModel.confirmDelete.collectAsState()
 
-    Scaffold(
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            skipHiddenState = false
+        )
+    )
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val controller = rememberColorPickerController()
+
+    if(confirm.second)
+        ConfirmAlertDialog(
+            dialogTitle = stringResource(R.string.deleting),
+            dialogText = stringResource(R.string.confirm_delete),
+            onConfirmation = {
+                confirm.first?.let{
+                    viewModel.deleteCategory(it.id) }
+            },
+            onDismissRequest = {viewModel.onConfirmDelete(null, false)}
+        )
+
+    BottomSheetScaffold(
+        sheetContent = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                //controller.selectByColor(category.color, true)
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = category.name,
+                    onValueChange = { viewModel.onCategoryNameChange(it) },
+                    label = { Text(stringResource(R.string.category_name)) }
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier.weight(4f),
+                        value = (category.priority ?: "").toString() ,
+                        onValueChange = { viewModel.onPriorityChange(it) },
+                        label = { Text(stringResource(R.string.priority)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.priority_info),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }) {
+                                Icon(
+                                    Icons.Filled.Info,
+                                    contentDescription = stringResource(R.string.priority_info)
+                                )
+                            }
+                        }
+                    )
+                    AlphaTile(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .weight(2f)
+                            .height(60.dp)
+                            .border(
+                                width = 2.dp,
+                                color = Color.Black,
+                                shape = RoundedCornerShape(6.dp)
+                            ),
+                        controller = controller
+                    )
+                    IconButton(
+                        modifier = Modifier.height(40.dp),
+                        onClick = {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.toast_category_color),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    ) {
+                        Icon(Icons.Default.Info, contentDescription = stringResource(R.string.info))
+                    }
+                    IconButton(
+                        modifier = Modifier.height(40.dp),
+                        onClick = {
+                            controller.selectByColor(Color.White, true)
+                        }
+                    ) {
+                        Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.reset_color))
+                    }
+                }
+
+                HsvColorPicker(
+                    modifier = Modifier
+                        .height(300.dp)
+                        .padding(4.dp),
+                    controller = controller,
+                    onColorChanged = {}
+                )
+                Row(horizontalArrangement = Arrangement.Center) {
+                    OutlinedButton(onClick = {
+                        manageBottomSheet(false, scope, scaffoldState)
+                        viewModel.newCategory()
+                    }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                    Spacer(Modifier.width(20.dp))
+                    OutlinedButton(
+                        onClick = {
+                            viewModel.onColorChange(controller.selectedColor.value)
+                            if (!viewModel.addCategory())
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.toast_category_priority),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                        },
+                    ) {
+                        Text(
+                            stringResource(if (category.id == 0) R.string.add_category else R.string.save_category),
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
+        },
         topBar = {
-            @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text("Category management", fontSize = 22.sp) },
+                title = { Text(stringResource(R.string.category_management), fontSize = 22.sp) },
               navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )}},
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.newCategory()
+                        manageBottomSheet(true, scope, scaffoldState)
+                    }) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = stringResource(R.string.add_category)
+                        )}
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.DarkGray,
                     titleContentColor = Color.LightGray,
                     navigationIconContentColor = Color.LightGray,
                     actionIconContentColor = Color.LightGray
                 )
-
             )
-        }
+        },
+        scaffoldState = scaffoldState,
+        sheetPeekHeight = 0.dp
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding).padding(4.dp)
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(4.dp)
         )
         {
-            val context = LocalContext.current
-            if(confirm.second)
-                ConfirmAlertDialog(
-                    dialogTitle = stringResource(R.string.deleting),
-                    dialogText = stringResource(R.string.confirm_delete),
-                    onConfirmation = {
-                        confirm.first?.let{
-                            viewModel.deleteCategory(it.id) }
-                        },
-                    onDismissRequest = {viewModel.onConfirmChange(null, false)}
-                    )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = name,
-                onValueChange = { viewModel.onCategoryNameChange(it) },
-                label = { Text(stringResource(R.string.category_name)) }
-            )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = (priority ?: "").toString() ,
-                onValueChange = { viewModel.onPriorityChange(it) },
-                label = { Text(stringResource(R.string.priority)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.priority_info),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }) {
-                        Icon(
-                            Icons.Filled.Info,
-                            contentDescription = stringResource(R.string.priority_info)
-                        )
-                    }
-                }
-            )
-            OutlinedButton(
-                onClick = {
-                    if(!viewModel.addCategory())
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.toast_category_priority),
-                            Toast.LENGTH_LONG
-                        ).show()
 
-                          },
-            ) { Text(stringResource(R.string.add_category), fontSize = 16.sp) }
             LazyColumn {
                 items(categories) { category ->
                     OutlinedCard(
                         modifier = Modifier
-                            .fillMaxWidth().padding(4.dp)
+                            .fillMaxWidth()
+                            .padding(4.dp)
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(category.color)
+                                .padding(4.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = category.name)
+                            Text(text = category.name, modifier = Modifier.weight(2f))
+                            Divider(
+                                color = Color.Black,
+                                modifier = Modifier.height(25.dp).width(1.dp).padding(4.dp)
+                            )
+                            Text(text = category.priority.toString())
                             IconButton(
-                                onClick = { viewModel.onConfirmChange(category, true)}
+                                onClick = {
+                                    viewModel.editCategory(category)
+                                    manageBottomSheet(true, scope, scaffoldState)
+                                    controller.selectByColor(category.color, true)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = stringResource(R.string.edit_category)
+                                )
+                            }
+                            IconButton(
+                                onClick = { viewModel.onConfirmDelete(category, true)}
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
@@ -152,6 +283,19 @@ fun CategoryManagement(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun manageBottomSheet(isExpand: Boolean, scope: CoroutineScope, scaffoldState: BottomSheetScaffoldState){
+    if(isExpand)
+        scope.launch {
+            scaffoldState.bottomSheetState.expand()
+        }
+    else
+        scope.launch {
+            scaffoldState.bottomSheetState.hide()
+        }
+}
+
 
 @Composable
 fun ConfirmAlertDialog(dialogTitle: String ,
@@ -171,7 +315,7 @@ fun ConfirmAlertDialog(dialogTitle: String ,
         },
         dismissButton = {
             TextButton(onClick = { onDismissRequest() }) {
-                Text(text = stringResource(R.string.no) )
+                Text(text = stringResource(R.string.cancel) )
             }
         },
         title = {

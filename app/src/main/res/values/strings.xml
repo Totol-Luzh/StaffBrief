@@ -39,12 +39,18 @@
     <string name="deleting">Deleting</string>
     <string name="confirm_delete">Do you really want to delete the category</string>
     <string name="category_name">Category name</string>
-    <string name="priority">Category priority from 1 to 127</string>
+    <string name="priority">Priority from 1 to 127</string>
     <string name="priority_info">The priority affects the order in which categories are displayed on the home screen</string>
     <string name="add_category">Add category</string>
     <string name="delete_category">Delete category</string>
     <string name="toast_category_priority">Fill in the fields: Category name and Category Priority</string>
-    <string name="yes">yes</string>
-    <string name="no">no</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="info">Additional information</string>
+    <string name="reset_color">Reset the color</string>
+    <string name="category_management">Category management</string>
+    <string name="toast_category_color">Color of the category</string>
+    <string name="edit_category">Edit category</string>
+    <string name="save_category">Save the category</string>
 
 </resources>

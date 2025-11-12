@@ -21,11 +21,8 @@ class CategoryManagementViewModel(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase
 ) : ViewModel() {
 
-    private val _categoryName = MutableStateFlow("")
-    val categoryName: StateFlow<String> = _categoryName.asStateFlow()
-
-    private val _categoryPriority = MutableStateFlow<Byte?>(10)
-    val categoryPriority: StateFlow<Byte?> = _categoryPriority.asStateFlow()
+    private val _category = MutableStateFlow(Category())
+    val category: StateFlow<Category> = _category.asStateFlow()
 
     private val _confirmDelete = MutableStateFlow<Pair<Category?, Boolean>>(Pair(null, false))
     val confirmDelete: StateFlow<Pair<Category?, Boolean>> = _confirmDelete.asStateFlow()
@@ -37,37 +34,47 @@ class CategoryManagementViewModel(
     )
 
     fun onCategoryNameChange(newValue: String) {
-        _categoryName.value = newValue
+        _category.value = _category.value.copy(name = newValue)
     }
 
     fun onPriorityChange(newValue: String) {
         if (newValue.isEmpty()) {
-            _categoryPriority.value = null
+            _category.value = _category.value.copy(priority = null)
             return
         }
         val number = newValue.toIntOrNull()
         if (number != null && number in 1..Byte.MAX_VALUE) {
-            _categoryPriority.value = number.toByte()
+            _category.value = _category.value.copy(priority = number.toByte())
         }
     }
 
-    fun onConfirmChange(category: Category?, confirmation: Boolean){
+    fun onColorChange(newValue: Color){
+        _category.value = _category.value.copy(color = newValue)
+    }
+
+    fun onConfirmDelete(category: Category?, confirmation: Boolean){
         _confirmDelete.value = Pair(category, confirmation)
     }
 
+    fun editCategory(newValue: Category){
+        _category.value = newValue
+    }
+
+    fun newCategory(){
+        _category.value = Category()
+    }
+
     fun addCategory(): Boolean {
-        val name = _categoryName.value
-        val priority = _categoryPriority.value
-        return if (name.isNotBlank() && priority != null) {
+         val cat = _category.value
+        return if(cat.name.isNotBlank() && cat.priority != null) {
             viewModelScope.launch {
                 try {
-                    addCategoryUseCase(name, priority, Color.White)
+                    addCategoryUseCase(cat)
                 } catch (e: Exception){
                     Log.e("Error Add Category", "${e.message}")
                 }
             }
-            _categoryName.value = ""
-            _categoryPriority.value = 10
+            _category.value = Category()
             true
         } else false
     }
