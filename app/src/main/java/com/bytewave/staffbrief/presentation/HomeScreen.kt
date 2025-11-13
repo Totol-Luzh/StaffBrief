@@ -8,15 +8,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,8 +54,9 @@ fun Home(
                 actions = {
                     IconButton(onClick = { navController.navigate(Routes.CategoryManagement.route) }) {
                         Icon(
-                            Icons.Filled.Settings,
-                            contentDescription = stringResource(R.string.settings)
+                            painterResource(R.drawable.ic_settings),
+                            contentDescription = stringResource(R.string.settings),
+                            tint = Color.Unspecified
                         )
                     }
                 },
@@ -75,8 +73,9 @@ fun Home(
             FloatingActionButton(
                 content = {
                     Icon(
-                        Icons.Filled.Add,
-                        contentDescription = stringResource(R.string.add_soldier)
+                        painterResource(R.drawable.ic_add),
+                        contentDescription = stringResource(R.string.add_soldier),
+                        tint = Color.Unspecified
                     )
                 },
                 onClick = { navController.navigate(Routes.CreateSoldier.createRoute(0L)) })
@@ -90,9 +89,15 @@ fun Home(
                 value = query,
                 onValueChange = { viewModel.onChangeSearchQuery(it) },
                 placeholder = { Text(stringResource(id = R.string.search_query)) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search))},
-                trailingIcon = { IconButton(onClick = {viewModel.clearSearchQuery()}) {
-                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
+                leadingIcon = { Icon(painterResource(R.drawable.ic_search),
+                    contentDescription = stringResource(id = R.string.search),
+                    tint = Color.Unspecified)},
+                trailingIcon = {
+                    if(query.isNotBlank())
+                    IconButton(onClick = {viewModel.clearSearchQuery()}) {
+                        Icon(painterResource(R.drawable.ic_delete_1),
+                            contentDescription = stringResource(id = R.string.clear),
+                            tint = Color.Unspecified)
                 }},
                 modifier = Modifier.padding(4.dp).fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
@@ -103,7 +108,11 @@ fun Home(
                         modifier = Modifier.padding(2.dp),
                         selected = category.second,
                         onClick = { viewModel.onChangeCategoryFlag(category.first, !category.second)},
-                        label = { Text(category.first.name) }
+                        label = { Text(category.first.name) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = category.first.color,
+                            selectedLabelColor = Color.Black
+                        )
                     )
                 }
             }
@@ -137,7 +146,7 @@ fun SoldierCard(soldier: Person, navigateToSoldier: (soldierId :Long) -> Unit){
         onClick = {navigateToSoldier(soldier.id)}
     ) {
         Text(
-            text = "${soldier.id}, ${soldier.lastName} ${soldier.firstName} ${soldier.patronymic}",
+            text = "${soldier.lastName} ${soldier.firstName} ${soldier.patronymic}",
             modifier = Modifier
                 .padding(8.dp),
             textAlign = TextAlign.Center,

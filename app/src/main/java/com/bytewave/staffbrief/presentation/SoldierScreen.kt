@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -24,12 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -46,9 +43,7 @@ fun Soldier(
     navController: NavController,
     viewModel: SoldierScreenViewModel = koinViewModel<SoldierScreenViewModel>()
 ) {
-    LaunchedEffect(personId) {
-        viewModel.loadSoldier(personId)
-    }
+    viewModel.loadSoldier(personId)
     val soldier = viewModel.soldier.value
     val relatives = viewModel.relatives.value
 
@@ -60,12 +55,15 @@ fun Soldier(
                 navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
-                            Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
+                            painterResource(R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(R.string.back),
+                            tint = Color.Unspecified
                         )}},
                 actions = {
                     IconButton(onClick = {navController.navigate(Routes.CreateSoldier.createRoute(personId))}) {
-                        Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.edit_soldier))}
+                        Icon(painterResource(R.drawable.ic_edit),
+                            contentDescription = stringResource(id = R.string.edit_soldier),
+                            tint = Color.Unspecified)}
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.DarkGray,
@@ -110,9 +108,9 @@ fun Soldier(
 
                 }
             }
-        items(relatives){relative ->
-            RelativeCard(relative)
-        }
+            items(relatives){relative ->
+                RelativeCard(relative)
+            }
 
 
         }

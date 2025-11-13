@@ -4,24 +4,20 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
@@ -46,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -98,12 +95,11 @@ fun CategoryManagement(
                     .padding(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                //controller.selectByColor(category.color, true)
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = category.name,
-                    onValueChange = { viewModel.onCategoryNameChange(it) },
+                    onValueChange = { if(it.length <= 15)viewModel.onCategoryNameChange(it) },
                     label = { Text(stringResource(R.string.category_name)) }
                 )
                 Row(
@@ -112,7 +108,7 @@ fun CategoryManagement(
                     OutlinedTextField(
                         modifier = Modifier.weight(4f),
                         value = (category.priority ?: "").toString() ,
-                        onValueChange = { viewModel.onPriorityChange(it) },
+                        onValueChange = { if(it.length <= 3)viewModel.onPriorityChange(it) },
                         label = { Text(stringResource(R.string.priority)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         trailingIcon = {
@@ -124,8 +120,9 @@ fun CategoryManagement(
                                 ).show()
                             }) {
                                 Icon(
-                                    Icons.Filled.Info,
-                                    contentDescription = stringResource(R.string.priority_info)
+                                    painterResource(R.drawable.ic_info),
+                                    contentDescription = stringResource(R.string.priority_info),
+                                    tint = Color.Unspecified
                                 )
                             }
                         }
@@ -137,7 +134,7 @@ fun CategoryManagement(
                             .height(60.dp)
                             .border(
                                 width = 2.dp,
-                                color = Color.Black,
+                                color = Color.Gray,
                                 shape = RoundedCornerShape(6.dp)
                             ),
                         controller = controller
@@ -152,7 +149,9 @@ fun CategoryManagement(
                             ).show()
                         }
                     ) {
-                        Icon(Icons.Default.Info, contentDescription = stringResource(R.string.info))
+                        Icon(painterResource(R.drawable.ic_info),
+                            contentDescription = stringResource(R.string.info),
+                            tint = Color.Unspecified)
                     }
                     IconButton(
                         modifier = Modifier.height(40.dp),
@@ -160,7 +159,9 @@ fun CategoryManagement(
                             controller.selectByColor(Color.White, true)
                         }
                     ) {
-                        Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.reset_color))
+                        Icon(painterResource(R.drawable.ic_delete_1),
+                            contentDescription = stringResource(R.string.reset_color),
+                            tint = Color.Unspecified)
                     }
                 }
 
@@ -188,6 +189,7 @@ fun CategoryManagement(
                                     context.getString(R.string.toast_category_priority),
                                     Toast.LENGTH_LONG
                                 ).show()
+                            manageBottomSheet(false, scope, scaffoldState)
                         },
                     ) {
                         Text(
@@ -204,8 +206,9 @@ fun CategoryManagement(
               navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
+                            painterResource(R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(R.string.back),
+                            tint = Color.Unspecified
                         )}},
                 actions = {
                     IconButton(onClick = {
@@ -213,8 +216,9 @@ fun CategoryManagement(
                         manageBottomSheet(true, scope, scaffoldState)
                     }) {
                         Icon(
-                            Icons.Default.Add,
-                            contentDescription = stringResource(R.string.add_category)
+                            painterResource(R.drawable.ic_add),
+                            contentDescription = stringResource(R.string.add_category),
+                            tint = Color.Unspecified
                         )}
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -245,11 +249,21 @@ fun CategoryManagement(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(category.color)
                                 .padding(4.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                                    .size(25.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = Color.DarkGray,
+                                        shape = CircleShape
+                                    )
+                                    .background(color = category.color, shape = CircleShape)
+                            )
                             Text(text = category.name, modifier = Modifier.weight(2f))
                             Divider(
                                 color = Color.Black,
@@ -264,16 +278,18 @@ fun CategoryManagement(
                                 }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = stringResource(R.string.edit_category)
+                                    painterResource(R.drawable.ic_edit),
+                                    contentDescription = stringResource(R.string.edit_category),
+                                    tint = Color.Unspecified
                                 )
                             }
                             IconButton(
                                 onClick = { viewModel.onConfirmDelete(category, true)}
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = stringResource(R.string.delete_category)
+                                    painterResource(R.drawable.ic_delete_2),
+                                    contentDescription = stringResource(R.string.delete_category),
+                                    tint = Color.Unspecified
                                 )
                             }
                         }

@@ -7,9 +7,12 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,11 +22,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +47,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -90,14 +90,17 @@ fun CreateSoldier(
                 navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
+                            painterResource(R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(R.string.back),
+                            tint = Color.Unspecified
                         )}},
                 actions = {
                     IconButton(onClick = {
                         viewModel.addSoldier()
                         navController.navigateUp() }) {
-                        Icon(Icons.Default.Done, stringResource(R.string.save_form))
+                        Icon(painterResource(R.drawable.ic_done),
+                            contentDescription = stringResource(R.string.save_form),
+                            tint = Color.Unspecified)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -145,12 +148,19 @@ fun CreateSoldier(
                 }
 
             ) {
-                if (soldier.photo == null) Text(stringResource(R.string.add_photo)) else Text(stringResource(R.string.delete_photo))
+                if (soldier.photo == null) {
+                    Row {
+                        Icon(painterResource(R.drawable.ic_picture),
+                            contentDescription = stringResource(R.string.add_photo),
+                            tint = Color.Unspecified)
+                        Text(stringResource(R.string.add_photo), Modifier.padding(start = 8.dp))
+                    }
+                } else Text(stringResource(R.string.delete_photo))
             }
 
             OutlinedTextField(
                 value = soldier.lastName,
-                onValueChange = { viewModel.onLastNameChange(it) },
+                onValueChange = { if(it.length <= 25)viewModel.onLastNameChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
@@ -159,7 +169,7 @@ fun CreateSoldier(
             )
             OutlinedTextField(
                 value = soldier.firstName,
-                onValueChange = { viewModel.onFirstNameChange(it) },
+                onValueChange = { if(it.length <= 20)viewModel.onFirstNameChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
@@ -168,7 +178,7 @@ fun CreateSoldier(
             )
             OutlinedTextField(
                 value = soldier.patronymic,
-                onValueChange = { viewModel.onPatronymicChange(it) },
+                onValueChange = { if(it.length <= 20) viewModel.onPatronymicChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
@@ -178,22 +188,23 @@ fun CreateSoldier(
             RankDropDownMenu(viewModel)
             OutlinedTextField(
                 value = soldier.birthDate ?: "",
-                onValueChange = { viewModel.onBirthDateChange(it) },
+                onValueChange = {if(it.length <= 10) viewModel.onBirthDateChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
                 singleLine = true,
-                label = { Text(stringResource(R.string.birth_date_extended)) }
+                label = { Text(stringResource(R.string.birth_date_extended)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             OutlinedTextField(
                 value = soldier.phoneNumber ?: "",
-                onValueChange = { viewModel.onPhoneNumberChange(it) },
+                onValueChange = {if (it.length <= 13) viewModel.onPhoneNumberChange(it) },
                 modifier = Modifier
                     .padding(2.dp)
                     .fillMaxWidth(),
                 singleLine = true,
                 label = { Text(stringResource(R.string.phone_number)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
             )
             OutlinedTextField(
                 value = soldier.info ?: "",
@@ -241,8 +252,10 @@ fun RankDropDownMenu(viewModel: SoldierFormViewModel) {
     Box {
         OutlinedButton(onClick = { expanded = !expanded },
         ) {
-            Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.rank))
-            Text(soldier.rank.russianName)
+            Icon(painterResource(R.drawable.ic_arrow_down),
+                contentDescription = stringResource(R.string.rank),
+                tint = Color.Unspecified)
+            Text(soldier.rank.russianName, Modifier.padding(horizontal = 4.dp))
         }
         DropdownMenu(
             expanded = expanded,
@@ -269,8 +282,10 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
     Box {
         OutlinedButton(onClick = { expanded = !expanded },
             ) {
-            Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.choose_categories))
-            Text(stringResource(R.string.choose_categories))
+            Icon(painterResource(R.drawable.ic_arrow_down),
+                contentDescription = stringResource(R.string.choose_categories),
+                tint = Color.Unspecified)
+            Text(stringResource(R.string.choose_categories), Modifier.padding(horizontal = 4.dp))
         }
         DropdownMenu(
             expanded = expanded,
@@ -282,7 +297,9 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
                     onClick = { viewModel.onChangeCategoryFlag(category.first, !category.second) },
                     trailingIcon = {
                         if (category.second)
-                            Icon(Icons.Outlined.Check, contentDescription = stringResource(R.string.selected))
+                            Icon(painterResource(R.drawable.ic_done),
+                                contentDescription = stringResource(R.string.selected),
+                                tint = Color.Unspecified)
                     }
                 )
             }
@@ -299,6 +316,7 @@ fun CustomRelativeCard(relative: Relative,
         TextField(
             value = relative.fullName,
             onValueChange = {viewModel.updateRelative(index, relative.copy(fullName = it))},
+            singleLine = true,
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth(),
@@ -307,6 +325,7 @@ fun CustomRelativeCard(relative: Relative,
         TextField(
             value = relative.kinship,
             onValueChange = {viewModel.updateRelative(index, relative.copy(kinship = it))},
+            singleLine = true,
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth(),
