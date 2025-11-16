@@ -6,22 +6,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.bytewave.staffbrief.data.db.entities.CategoriesEntity
-import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersCategoriesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
-import com.bytewave.staffbrief.domain.model.SoldierFullInfo
+import com.bytewave.staffbrief.domain.model.SoldierBrief
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StaffBriefDao {
 
-        @Insert(onConflict = OnConflictStrategy.ABORT)
-        fun insertPerson(person: PersonsEntity): Long
-        @Update
-        fun updatePerson(person: PersonsEntity): Int
-        @Query("DELETE FROM persons WHERE id = :personId")
-        fun deletePersonById(personId: Long)
 
         @Insert(onConflict = OnConflictStrategy.ABORT)
         fun insertSoldier(soldier: SoldiersEntity): Long
@@ -65,55 +58,74 @@ interface StaffBriefDao {
         fun deleteSoldierCategoryById(soldierCategoryId: Long): Int
 
         @Query("""
-            SELECT DISTINCT p.*
-            FROM persons p
-            INNER JOIN soldiers s ON p.id = s.person_id
+            SELECT DISTINCT 
+                s.id AS soldierId,
+                s.first_name AS firstName,
+                s.last_name AS lastName,
+                s.patronymic,
+                s.military_rank AS rank,
+                s.photo
+            FROM soldiers s
             INNER JOIN soldiers_categories sc ON s.id = sc.soldier_id
-            WHERE 
+            WHERE
                 (sc.category_id IN (:categoriesIds))
                 AND (
-                    :searchString IS NULL 
-                    OR p.first_name LIKE '%' || :searchString || '%'
-                    OR p.last_name LIKE '%' || :searchString || '%'
-                    OR p.patronymic LIKE '%' || :searchString || '%'
+                    :searchString IS NULL
+                    OR s.first_name LIKE '%' || :searchString || '%'
+                    OR s.last_name LIKE '%' || :searchString || '%'
+                    OR s.patronymic LIKE '%' || :searchString || '%'
                     OR s.info LIKE '%' || :searchString || '%'
                 )
-            ORDER BY p.last_name, p.first_name
+            ORDER BY s.last_name, s.first_name
         """)
-        fun getAllPersonBySoldier(categoriesIds: List<Int>, searchString: String): Flow<List<PersonsEntity>>
+        fun getAllSoldier(categoriesIds: List<Int>, searchString: String): Flow<List<SoldierBrief>>
+
         @Query("""
-            SELECT DISTINCT p.*
-            FROM persons p
-            INNER JOIN soldiers s ON p.id = s.person_id
+            SELECT 
+                s.id AS soldierId,
+                s.first_name AS firstName,
+                s.last_name AS lastName,
+                s.patronymic,
+                s.military_rank AS rank,
+                s.photo
+            FROM soldiers s
+            LEFT JOIN soldiers_categories sc ON s.id = sc.soldier_id
+            WHERE sc.soldier_id IS NULL
+                AND (
+                    :searchString IS NULL
+                    OR s.first_name LIKE '%' || :searchString || '%'
+                    OR s.last_name LIKE '%' || :searchString || '%'
+                    OR s.patronymic LIKE '%' || :searchString || '%'
+                    OR s.info LIKE '%' || :searchString || '%'
+                )
+            ORDER BY s.last_name, s.first_name;
+        """)
+        fun getAllSoldierWithoutCategory(searchString: String?): Flow<List<SoldierBrief>>
+
+        @Query("""
+            SELECT DISTINCT
+                id AS soldierId,
+                first_name AS firstName,
+                last_name AS lastName,
+                patronymic,
+                military_rank AS rank,
+                photo
+            FROM soldiers
             WHERE (
                 :searchString IS NULL 
-                OR p.first_name LIKE '%' || :searchString || '%'
-                OR p.last_name LIKE '%' || :searchString || '%'
-                OR p.patronymic LIKE '%' || :searchString || '%'
-                OR s.info LIKE '%' || :searchString || '%'
+                OR first_name LIKE '%' || :searchString || '%'
+                OR last_name LIKE '%' || :searchString || '%'
+                OR patronymic LIKE '%' || :searchString || '%'
+                OR info LIKE '%' || :searchString || '%'
             )
-            ORDER BY p.last_name, p.first_name
+            ORDER BY last_name, first_name
         """)
-        fun getAllPersonsBySoldierWithoutFilter(searchString: String?): Flow<List<PersonsEntity>>
+        fun getAllSoldierWithoutFilter(searchString: String?): Flow<List<SoldierBrief>>
         @Query("""
-        SELECT 
-            s.id AS soldierId,
-            s.person_id AS personId,
-            p.first_name AS firstName,
-            p.last_name AS lastName,
-            p.patronymic AS patronymic,
-            p.birth_date AS birthDate,
-            p.phone_number AS phoneNumber,
-            s.photo AS photo,
-            s.military_rank AS rank,
-            s.info AS info,
-            s.positive AS positive,
-            s.negative AS negative
-        FROM soldiers s
-        INNER JOIN persons p ON s.person_id = p.id
-        WHERE p.id = :personId
+        SELECT * FROM soldiers
+        WHERE id = :soldierId
         """)
-        suspend fun getFullSoldierInfoByPerson(personId: Long): SoldierFullInfo
+        suspend fun getSoldierById(soldierId: Long): SoldiersEntity
 
 
 }

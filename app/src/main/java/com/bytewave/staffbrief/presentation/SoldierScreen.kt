@@ -91,7 +91,7 @@ fun Soldier(
                     }
                     soldier?.let {
                         Text(
-                            text = "${it.lastName}\n${it.firstName}\n${it.patronymic}\n${it.rank.russianName}",
+                            text = "${it.lastName}\n${it.firstName}\n${it.patronymic}\n${it.militaryRank.russianName}",
                             fontSize = 20.sp,
                             modifier = Modifier.padding(6.dp).fillMaxWidth()
                         )

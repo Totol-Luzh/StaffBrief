@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.bytewave.staffbrief.data.db.converters.BitmapConverter
 import com.bytewave.staffbrief.data.db.entities.CategoriesEntity
-import com.bytewave.staffbrief.data.db.entities.PersonsEntity
 import com.bytewave.staffbrief.data.db.entities.RelativesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersCategoriesEntity
 import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
@@ -16,8 +15,8 @@ import com.bytewave.staffbrief.data.db.entities.SoldiersEntity
 const val DATABASE_NAME = "staff_brief_room_database"
 
 @Database(
-    entities = [PersonsEntity::class, SoldiersEntity::class, RelativesEntity::class, CategoriesEntity::class, SoldiersCategoriesEntity::class],
-    version = 6,
+    entities = [ SoldiersEntity::class, RelativesEntity::class, CategoriesEntity::class, SoldiersCategoriesEntity::class],
+    version = 7,
     exportSchema = false
 )
 @TypeConverters(BitmapConverter::class)

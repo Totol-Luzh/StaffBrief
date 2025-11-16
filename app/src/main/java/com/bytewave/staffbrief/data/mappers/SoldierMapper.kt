@@ -5,7 +5,11 @@ import com.bytewave.staffbrief.domain.model.Soldier
 
 fun Soldier.toEntity(): SoldiersEntity = SoldiersEntity(
     soldierId = soldierId,
-    personId = personId,
+    firstName = firstName,
+    lastName = lastName,
+    patronymic = patronymic,
+    birthDate = birthDate,
+    phoneNumber = phoneNumber,
     militaryRank = militaryRank,
     photo = photo,
     info = info,
@@ -15,7 +19,11 @@ fun Soldier.toEntity(): SoldiersEntity = SoldiersEntity(
 
 fun SoldiersEntity.toDomain(): Soldier = Soldier(
     soldierId = soldierId,
-    personId = personId,
+    firstName = firstName,
+    lastName = lastName,
+    patronymic = patronymic,
+    birthDate = birthDate,
+    phoneNumber = phoneNumber,
     militaryRank = militaryRank,
     photo = photo,
     info = info,

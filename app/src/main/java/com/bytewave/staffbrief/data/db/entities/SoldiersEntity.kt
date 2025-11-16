@@ -9,25 +9,27 @@ import androidx.room.PrimaryKey
 
 @Entity(
         tableName = "soldiers",
-        foreignKeys = [
-            ForeignKey(
-                            entity = PersonsEntity::class,
-                            parentColumns = ["id"],
-                            childColumns = ["person_id"],
-                            onDelete = ForeignKey.CASCADE
-            )
-        ],
-        indices = [
-            Index(value = ["person_id"])
-        ]
+        indices = [Index(value = ["first_name", "last_name", "patronymic", "birth_date"], unique = true)]
 )
 data class SoldiersEntity(
         @PrimaryKey(autoGenerate = true)
         @ColumnInfo(name = "id")
         val soldierId: Long = 0,
 
-        @ColumnInfo(name = "person_id")
-        var personId: Long,
+        @ColumnInfo(name = "first_name")
+        var firstName: String,
+
+        @ColumnInfo(name = "last_name")
+        var lastName: String,
+
+        @ColumnInfo(name = "patronymic")
+        var patronymic: String,
+
+        @ColumnInfo(name = "birth_date")
+        var birthDate: String? = null,
+
+        @ColumnInfo(name = "phone_number")
+        var phoneNumber: String? = null,
 
         @ColumnInfo(name = "military_rank")
         var militaryRank: Rank,

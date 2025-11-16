@@ -8,11 +8,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,13 +39,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -69,6 +67,7 @@ fun CreateSoldier(
     if(personId != 0L){
         viewModel.loadSoldier(personId)
     }
+    viewModel.loadCategories()
     val soldier by viewModel.soldierState.collectAsState()
     val relatives by viewModel.relatives.collectAsState()
     val scrollState = rememberLazyListState()
@@ -149,7 +148,7 @@ fun CreateSoldier(
 
             ) {
                 if (soldier.photo == null) {
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(painterResource(R.drawable.ic_picture),
                             contentDescription = stringResource(R.string.add_photo),
                             tint = Color.Unspecified)
@@ -255,14 +254,14 @@ fun RankDropDownMenu(viewModel: SoldierFormViewModel) {
             Icon(painterResource(R.drawable.ic_arrow_down),
                 contentDescription = stringResource(R.string.rank),
                 tint = Color.Unspecified)
-            Text(soldier.rank.russianName, Modifier.padding(horizontal = 4.dp))
+            Text(soldier.militaryRank.russianName, Modifier.padding(horizontal = 4.dp))
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
             Rank.entries.forEach { rank ->
-                if(soldier.rank != rank)
+                if(soldier.militaryRank != rank)
                     DropdownMenuItem(
                         text = { Text(rank.russianName) },
                         onClick = {
@@ -294,7 +293,7 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
             categories.forEach { category ->
                 DropdownMenuItem(
                     text = { Text(category.first.name) },
-                    onClick = { viewModel.onChangeCategoryFlag(category.first, !category.second) },
+                    onClick = { viewModel.onChangeCategoryFlag(category.first) },
                     trailingIcon = {
                         if (category.second)
                             Icon(painterResource(R.drawable.ic_done),

@@ -1,9 +1,10 @@
 package com.bytewave.staffbrief.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.bytewave.staffbrief.domain.model.Person
+import com.bytewave.staffbrief.domain.model.Category
+import com.bytewave.staffbrief.domain.model.SoldierBrief
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
-import com.bytewave.staffbrief.domain.use_case.GetAllPersonBySoldierUseCase
+import com.bytewave.staffbrief.domain.use_case.GetAllSoldierUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,21 +13,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val getAllPersonBySoldierUseCase: GetAllPersonBySoldierUseCase,
+    private val getAllSoldierUseCase: GetAllSoldierUseCase,
     private val getAllCategoriesCurrentUseCase: GetAllCategoriesCurrentUseCase
 ): BaseViewModel(getAllCategoriesCurrentUseCase) {
+
     private val _searchQuery = MutableStateFlow("")
     val searchQuery:  StateFlow<String> = _searchQuery.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val soldiers: StateFlow<List<Person>> =
+    val soldiers: StateFlow<List<SoldierBrief>> =
         combine(categoryWithIndex, searchQuery) { categories, query ->
             categories to query
         }
             .flatMapLatest { (categories, query) ->
-                getAllPersonBySoldierUseCase(categories, query)
+                getAllSoldierUseCase(categories, query)
             }
             .stateIn(
                 viewModelScope,
@@ -39,5 +42,13 @@ class HomeViewModel(
     }
     fun clearSearchQuery(){
         _searchQuery.value = ""
+    }
+
+    override fun loadCategories(){
+        viewModelScope.launch {
+            _categoryWithIndex.value = getAllCategoriesCurrentUseCase(null).map { element ->
+                Pair(element, false)
+            } + Pair(Category(0, "", priority = 0), false)
+        }
     }
 }

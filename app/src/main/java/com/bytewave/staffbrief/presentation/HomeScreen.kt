@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
-import com.bytewave.staffbrief.domain.model.Person
+import com.bytewave.staffbrief.domain.model.SoldierBrief
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -42,7 +42,7 @@ fun Home(
     navController: NavController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
-    viewModel.updateCategoryList()
+    viewModel.loadCategories()
     val soldiers by viewModel.soldiers.collectAsState()
     val categories by viewModel.categoryWithIndex.collectAsState()
     val query by viewModel.searchQuery.collectAsState()
@@ -107,8 +107,12 @@ fun Home(
                     FilterChip(
                         modifier = Modifier.padding(2.dp),
                         selected = category.second,
-                        onClick = { viewModel.onChangeCategoryFlag(category.first, !category.second)},
-                        label = { Text(category.first.name) },
+                        onClick = { viewModel.onChangeCategoryFlag(category.first)},
+                        label = { Text(
+                            if(category.first.id == 0)
+                                stringResource(R.string.without_category)
+                            else
+                                category.first.name) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = category.first.color,
                             selectedLabelColor = Color.Black
@@ -133,7 +137,7 @@ fun Home(
 }
 
 @Composable
-fun SoldierCard(soldier: Person, navigateToSoldier: (soldierId :Long) -> Unit){
+fun SoldierCard(soldier: SoldierBrief, navigateToSoldier: (soldierId :Long) -> Unit){
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -143,7 +147,7 @@ fun SoldierCard(soldier: Person, navigateToSoldier: (soldierId :Long) -> Unit){
         ),
         modifier = Modifier
             .fillMaxWidth().height(50.dp).padding(6.dp),
-        onClick = {navigateToSoldier(soldier.id)}
+        onClick = {navigateToSoldier(soldier.soldierId)}
     ) {
         Text(
             text = "${soldier.lastName} ${soldier.firstName} ${soldier.patronymic}",

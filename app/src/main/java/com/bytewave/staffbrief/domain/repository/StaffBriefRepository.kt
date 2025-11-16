@@ -1,17 +1,13 @@
 package com.bytewave.staffbrief.domain.repository
 
 import com.bytewave.staffbrief.domain.model.Category
-import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Relative
 import com.bytewave.staffbrief.domain.model.Soldier
+import com.bytewave.staffbrief.domain.model.SoldierBrief
 import com.bytewave.staffbrief.domain.model.SoldierCategory
-import com.bytewave.staffbrief.domain.model.SoldierFullInfo
 import kotlinx.coroutines.flow.Flow
 
 interface StaffBriefRepository {
-    suspend fun insertPerson(person: Person): Result<Long>
-    suspend fun updatePerson(person: Person): Result<Int>
-    //suspend fun deletePerson(personId: Long): Result<Int>
 
     suspend fun addSoldier(soldier: Soldier): Result<Long>
     suspend fun updateSoldier(soldier: Soldier): Result<Int>
@@ -33,9 +29,10 @@ interface StaffBriefRepository {
     suspend fun deleteRemovedCategories(soldierId: Long, categoryIds: List<Int>): Result<Int>
     suspend fun deleteSoldierCategory(soldierCategoryId: Long): Result<Int>
 
-    fun getAllSoldierFullInfo(categoriesIds: List<Int>, searchQuery: String): Flow<List<Person>>
-    fun getAllSoldierWithoutFilter(searchQuery: String): Flow<List<Person>>
-    suspend fun getFullSoldierInfoByPerson(personId: Long): Result<SoldierFullInfo>
+    fun getAllSoldier(categoriesIds: List<Int>, searchQuery: String): Flow<List<SoldierBrief>>
+    fun getAllSoldierWithoutCategory(searchQuery: String): Flow<List<SoldierBrief>>
+    fun getAllSoldierWithoutFilter(searchQuery: String): Flow<List<SoldierBrief>>
+    suspend fun getSoldierById(soldierId: Long): Result<Soldier>
 }
 
 sealed class Result<out T> {

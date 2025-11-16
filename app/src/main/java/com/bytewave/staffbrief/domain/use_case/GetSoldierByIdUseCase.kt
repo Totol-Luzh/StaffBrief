@@ -1,19 +1,19 @@
 package com.bytewave.staffbrief.domain.use_case
 
 import android.util.Log
-import com.bytewave.staffbrief.domain.model.SoldierFullInfo
+import com.bytewave.staffbrief.domain.model.Soldier
 import com.bytewave.staffbrief.domain.repository.Result
 import com.bytewave.staffbrief.domain.repository.StaffBriefRepository
 
-interface GetFullSoldierInfoByPersonUseCase {
-    suspend operator fun invoke(personId: Long): SoldierFullInfo?
+interface GetSoldierByIdUseCase {
+    suspend operator fun invoke(personId: Long): Soldier?
 }
 
-class GetFullSoldierInfoByPersonUseCaseImpl(
+class GetSoldierByIdUseCaseImpl(
     private val repository: StaffBriefRepository
-): GetFullSoldierInfoByPersonUseCase{
-    override suspend fun invoke(personId: Long): SoldierFullInfo? {
-        when(val result = repository.getFullSoldierInfoByPerson(personId)){
+): GetSoldierByIdUseCase{
+    override suspend fun invoke(personId: Long): Soldier? {
+        when(val result = repository.getSoldierById(personId)){
             is Result.Success -> {
                 Log.d("Get soldier", "Success")
                 return result.data

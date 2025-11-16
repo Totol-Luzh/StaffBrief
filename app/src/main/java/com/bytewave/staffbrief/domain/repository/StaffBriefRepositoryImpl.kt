@@ -5,11 +5,10 @@ import com.bytewave.staffbrief.data.db.StaffBriefDao
 import com.bytewave.staffbrief.data.mappers.toDomain
 import com.bytewave.staffbrief.data.mappers.toEntity
 import com.bytewave.staffbrief.domain.model.Category
-import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Relative
 import com.bytewave.staffbrief.domain.model.Soldier
+import com.bytewave.staffbrief.domain.model.SoldierBrief
 import com.bytewave.staffbrief.domain.model.SoldierCategory
-import com.bytewave.staffbrief.domain.model.SoldierFullInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -17,30 +16,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : StaffBriefRepository {
-
-    override suspend fun insertPerson(person: Person): Result<Long> = withContext(Dispatchers.IO) {
-        try {
-            Result.Success(staffBriefDao.insertPerson(person.toEntity()))
-        } catch (e: Throwable) {
-            Result.Error(e)
-        }
-    }
-
-    override suspend fun updatePerson(person: Person): Result<Int> = withContext(Dispatchers.IO) {
-        try {
-            Result.Success(staffBriefDao.updatePerson(person.toEntity()))
-        } catch (e: Throwable) {
-            Result.Error(e)
-        }
-    }
-
-//    override suspend fun deletePerson(personId: Long): Result<Int> = withContext(Dispatchers.IO) {
-//        try {
-//            Result.Success(staffBriefDao.deletePersonById(personId))
-//        } catch (e: Throwable) {
-//            Result.Error(e)
-//        }
-//    }
 
     override suspend fun addSoldier(soldier: Soldier): Result<Long> = withContext(Dispatchers.IO) {
         try {
@@ -176,22 +151,22 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
         }
     }
 
-    override fun getAllSoldierFullInfo(categoriesIds: List<Int>, searchQuery: String): Flow<List<Person>> {
-        return  staffBriefDao.getAllPersonBySoldier(categoriesIds, searchQuery).map { list ->
-            list.map { it.toDomain() }
-        }
+    override fun getAllSoldier(categoriesIds: List<Int>, searchQuery: String): Flow<List<SoldierBrief>> {
+        return  staffBriefDao.getAllSoldier(categoriesIds, searchQuery)
     }
 
-    override fun getAllSoldierWithoutFilter(searchQuery: String): Flow<List<Person>> {
-        return  staffBriefDao.getAllPersonsBySoldierWithoutFilter(searchQuery).map { list ->
-            list.map { it.toDomain() }
-        }
+    override fun getAllSoldierWithoutCategory(searchQuery: String): Flow<List<SoldierBrief>> {
+        return  staffBriefDao.getAllSoldierWithoutCategory( searchQuery)
     }
 
-    override suspend fun getFullSoldierInfoByPerson(personId: Long): Result<SoldierFullInfo>  = withContext(
+    override fun getAllSoldierWithoutFilter(searchQuery: String): Flow<List<SoldierBrief>> {
+        return  staffBriefDao.getAllSoldierWithoutFilter(searchQuery)
+    }
+
+    override suspend fun getSoldierById(soldierId: Long): Result<Soldier>  = withContext(
         Dispatchers.IO){
         try {
-            Result.Success(staffBriefDao.getFullSoldierInfoByPerson(personId))
+            Result.Success(staffBriefDao.getSoldierById(soldierId).toDomain())
         } catch (e: Throwable) {
             Result.Error(e)
         }

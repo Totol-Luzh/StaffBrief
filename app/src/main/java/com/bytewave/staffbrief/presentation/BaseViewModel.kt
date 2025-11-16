@@ -14,24 +14,26 @@ open class BaseViewModel(
     protected val _categoryWithIndex = MutableStateFlow<List<Pair<Category, Boolean>>>(emptyList())
     val categoryWithIndex: StateFlow<List<Pair<Category, Boolean>>> = _categoryWithIndex
 
-    init {
-        viewModelScope.launch {
-            _categoryWithIndex.value = getAllCategoriesCurrentUseCase(null).map {
-                    element ->
-                Pair(element, false)
-            }
-        }
-    }
-    fun onChangeCategoryFlag(category: Category, flag: Boolean) {
+    fun onChangeCategoryFlag(category: Category) {
+
         _categoryWithIndex.value = categoryWithIndex.value.map { item ->
-            if (item.first.name == category.name) {
-                item.copy(category, flag)
-            } else {
-                item
+            val currentCategory = item.first
+
+            when{
+                currentCategory.name == category.name -> {
+                    item.copy(second =  !item.second)
+                }
+                category.id == 0 && currentCategory.name != category.name -> {
+                    item.copy(second = false)
+                }
+                category.id != 0 && currentCategory.id == 0 -> {
+                    item.copy(second = false)
+                }
+                else -> item
             }
         }
     }
-    fun updateCategoryList(){
+    open fun loadCategories(){
         viewModelScope.launch {
             _categoryWithIndex.value = getAllCategoriesCurrentUseCase(null).map {
                     element ->

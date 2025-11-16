@@ -4,15 +4,12 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.bytewave.staffbrief.data.db.entities.Rank
-import com.bytewave.staffbrief.domain.model.Person
 import com.bytewave.staffbrief.domain.model.Relative
 import com.bytewave.staffbrief.domain.model.Soldier
-import com.bytewave.staffbrief.domain.model.SoldierFullInfo
-import com.bytewave.staffbrief.domain.use_case.AddPersonUseCase
 import com.bytewave.staffbrief.domain.use_case.AddRelativeUseCase
 import com.bytewave.staffbrief.domain.use_case.AddSoldierUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
-import com.bytewave.staffbrief.domain.use_case.GetFullSoldierInfoByPersonUseCase
+import com.bytewave.staffbrief.domain.use_case.GetSoldierByIdUseCase
 import com.bytewave.staffbrief.domain.use_case.GetRelativesBySoldierUseCase
 import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,17 +18,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SoldierFormViewModel(
-    private val addPersonUseCase: AddPersonUseCase,
     private val addSoldierUseCase: AddSoldierUseCase,
     private val getAllCategoriesCurrentUseCase: GetAllCategoriesCurrentUseCase,
     private val insertSoldiersCategoriesUseCase: InsertSoldiersCategoriesUseCase,
-    private val getFullSoldierInfoByPersonUseCase: GetFullSoldierInfoByPersonUseCase,
+    private val getSoldierByIdUseCase: GetSoldierByIdUseCase,
     private val addRelativeUseCase: AddRelativeUseCase,
     private val getRelativesBySoldierUseCase: GetRelativesBySoldierUseCase
 ) : BaseViewModel(getAllCategoriesCurrentUseCase) {
 
-    private val _soldierState = MutableStateFlow(SoldierFullInfo())
-    val soldierState: StateFlow<SoldierFullInfo> = _soldierState.asStateFlow()
+    private val _soldierState = MutableStateFlow(Soldier())
+    val soldierState: StateFlow<Soldier> = _soldierState.asStateFlow()
 
     private val _relatives = MutableStateFlow<MutableList<Relative>>(mutableListOf())
     val relatives: StateFlow<List<Relative>> = _relatives.asStateFlow()
@@ -69,7 +65,7 @@ class SoldierFormViewModel(
     }
 
     fun onRankChange(newValue: Rank){
-        _soldierState.value = _soldierState.value.copy(rank = newValue)
+        _soldierState.value = _soldierState.value.copy(militaryRank = newValue)
     }
 
     fun onPhotoChange(newValue: Bitmap?){
@@ -93,32 +89,26 @@ class SoldierFormViewModel(
         if(soldierState.value.lastName.isNotBlank() && soldierState.value.firstName.isNotBlank() && soldierState.value.patronymic.isNotBlank()){
             viewModelScope.launch {
                 try {
-                    var person = Person(
-                        id =soldierState.value.personId,
+                    var soldier = Soldier(
+                        soldierId = soldierState.value.soldierId,
                         firstName = soldierState.value.firstName,
                         patronymic = soldierState.value.patronymic,
                         lastName = soldierState.value.lastName,
                         birthDate = if (soldierState.value.birthDate.isNullOrBlank()) null else soldierState.value.birthDate,
-                        phoneNumber = if (soldierState.value.phoneNumber.isNullOrBlank()) null else soldierState.value.phoneNumber
-                    )
-                    val soldier = Soldier(
-                        soldierId = soldierState.value.soldierId,
-                        personId = soldierState.value.personId,
-                        militaryRank = soldierState.value.rank,
+                        phoneNumber = if (soldierState.value.phoneNumber.isNullOrBlank()) null else soldierState.value.phoneNumber,
+                        militaryRank = soldierState.value.militaryRank,
                         photo = soldierState.value.photo,
                         info = if (soldierState.value.info.isNullOrBlank()) null else soldierState.value.info,
                         positive = if (soldierState.value.positive.isNullOrBlank()) null else soldierState.value.positive,
                         negative = if (soldierState.value.negative.isNullOrBlank()) null else soldierState.value.negative
                     )
-                    if(soldierState.value.personId == 0L) {
-                        soldier.personId = addPersonUseCase(person)
+                    if(soldierState.value.soldierId == 0L) {
                         val soldierId = addSoldierUseCase(soldier)
                         insertSoldiersCategoriesUseCase(soldierId, categoryWithIndex.value)
                         addRelativeUseCase(soldierId, _relatives.value.map{ relative ->
                             relative.copy(soldierId = soldierId)
                         })
                     } else {
-                        addPersonUseCase(person)
                         addSoldierUseCase(soldier)
                         insertSoldiersCategoriesUseCase(soldier.soldierId, categoryWithIndex.value)
                         addRelativeUseCase(soldier.soldierId, _relatives.value.map{ relative ->
@@ -136,7 +126,7 @@ class SoldierFormViewModel(
 
     fun loadSoldier(id: Long){
         viewModelScope.launch {
-            val soldier = getFullSoldierInfoByPersonUseCase(personId = id)
+            val soldier = getSoldierByIdUseCase(personId = id)
             if (soldier != null) {
                 _soldierState.value = soldier
             }
