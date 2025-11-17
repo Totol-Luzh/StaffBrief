@@ -53,5 +53,7 @@
     <string name="edit_category">Изменить категорию</string>
     <string name="save_category">Сохранить категорию</string>
     <string name="without_category">Без категории</string>
+    <string name="product_by">Product by ByteVawe</string>
+    <string name="app_icon">Иконка приложения</string>
 
 </resources>

@@ -53,5 +53,7 @@
     <string name="edit_category">Edit category</string>
     <string name="save_category">Save the category</string>
     <string name="without_category">Without a category</string>
+    <string name="product_by">Product by ByteVawe</string>
+    <string name="app_icon">App icon</string>
 
 </resources>

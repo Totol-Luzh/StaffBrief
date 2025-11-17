@@ -35,12 +35,13 @@ fun Main(){
 
     val navController = rememberNavController()
     Column(Modifier.padding(0.dp)) {
-        NavHost(navController = navController, startDestination = Routes.Home.route, modifier = Modifier.weight(1f)) {
+        NavHost(navController = navController, startDestination = Routes.SplashScreen.route, modifier = Modifier.weight(1f)) {
 
+            composable(Routes.SplashScreen.route) {SplashScreen(navController)}
             composable(Routes.Home.route) { Home(navController) }
             composable(Routes.CreateSoldier.route,
                 arguments = listOf(navArgument("personId") {type = NavType.LongType})
-                ) {backStackEntry ->
+            ) {backStackEntry ->
                 val personId = backStackEntry.arguments?.getLong("personId") ?: 0L
                 CreateSoldier(personId, navController)
             }
@@ -58,6 +59,7 @@ fun Main(){
 
 sealed class Routes(val route: String) {
 
+    object SplashScreen : Routes("splash_screen")
     object Home : Routes("home")
     object CreateSoldier : Routes("create_soldier/{personId}"){
         fun createRoute(personId: Long) = "create_soldier/$personId"
