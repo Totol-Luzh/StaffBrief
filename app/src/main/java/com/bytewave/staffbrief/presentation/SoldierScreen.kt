@@ -51,7 +51,7 @@ fun Soldier(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text("Soldier", fontSize = 22.sp) },
+                title = { Text(stringResource(R.string.soldier_screen), fontSize = 22.sp) },
                 navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(

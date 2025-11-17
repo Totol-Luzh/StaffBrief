@@ -46,9 +46,8 @@ class HomeViewModel(
 
     override fun loadCategories(){
         viewModelScope.launch {
-            _categoryWithIndex.value = getAllCategoriesCurrentUseCase(null).map { element ->
-                Pair(element, false)
-            } + Pair(Category(0, "", priority = 0), false)
+             val categories = getAllCategoriesCurrentUseCase(null).map { it to false}
+            _categoryWithIndex.value = if(categories.isEmpty()) categories else categories + Pair(Category(0, "", priority = 0), false)
         }
     }
 }
