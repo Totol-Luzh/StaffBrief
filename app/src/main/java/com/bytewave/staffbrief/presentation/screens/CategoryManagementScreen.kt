@@ -68,7 +68,7 @@ fun CategoryManagement(
 ) {
     val categories by viewModel.categories.collectAsState()
     val category by viewModel.category.collectAsState()
-    val confirm by viewModel.confirmDelete.collectAsState()
+    val confirm by viewModel.confirmation.collectAsState()
 
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
@@ -85,10 +85,10 @@ fun CategoryManagement(
             dialogText = stringResource(R.string.confirm_delete_category),
             onConfirmation = {
                 confirm.first?.let {
-                    viewModel.deleteCategory(it.id)
+                    viewModel.deleteCategory(it.toInt())
                 }
             },
-            onDismissRequest = { viewModel.onConfirmDelete(null, false) }
+            onDismissRequest = { viewModel.onConfirm(null, false) }
         )
 
     BottomSheetScaffold(
@@ -290,7 +290,7 @@ fun CategoryManagement(
                                 )
                             }
                             IconButton(
-                                onClick = { viewModel.onConfirmDelete(category, true)}
+                                onClick = { viewModel.onConfirm(category.id.toLong(), true)}
                             ) {
                                 Icon(
                                     painterResource(R.drawable.ic_delete_2),

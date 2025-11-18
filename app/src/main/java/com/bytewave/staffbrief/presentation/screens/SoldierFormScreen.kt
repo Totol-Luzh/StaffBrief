@@ -75,7 +75,7 @@ fun CreateSoldier(
     viewModel.loadCategories()
     val soldier by viewModel.soldierState.collectAsState()
     val relatives by viewModel.relatives.collectAsState()
-    val confirmDelete by viewModel.confirmDelete.collectAsState()
+    val confirm by viewModel.confirmation.collectAsState()
     val scrollState = rememberLazyListState()
     val context = LocalContext.current
     val pickMedia = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
@@ -86,16 +86,16 @@ fun CreateSoldier(
                 viewModel.onPhotoChange(bitmapImage)
         }
     }
-    if(confirmDelete.second)
+    if(confirm.second)
         ConfirmAlertDialog(
             dialogTitle = stringResource(R.string.deleting),
             dialogText = stringResource(R.string.confirm_delete_relative),
             onConfirmation = {
-                confirmDelete.first?.let {
-                    viewModel.deleteRelativeAt(it)
+                confirm.first?.let {
+                    viewModel.deleteRelativeAt(it.toInt())
                 }
             },
-            onDismissRequest = { viewModel.onConfirmDelete(null, false) }
+            onDismissRequest = { viewModel.onConfirm(null, false) }
         )
 
     Scaffold(
@@ -365,7 +365,7 @@ fun CustomRelativeCard(relative: Relative,
             placeholder = { Text(stringResource(R.string.general_info))}
         )
         OutlinedButton(
-            onClick = {viewModel.onConfirmDelete(index, true)},
+            onClick = {viewModel.onConfirm(index.toLong(), true)},
             modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
         ) {Text(stringResource(R.string.delete_relative))}
     }

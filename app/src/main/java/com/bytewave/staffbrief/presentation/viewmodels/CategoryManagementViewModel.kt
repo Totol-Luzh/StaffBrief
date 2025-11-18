@@ -2,7 +2,6 @@ package com.bytewave.staffbrief.presentation.viewmodels
 
 import android.util.Log
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.use_case.AddCategoryUseCase
@@ -19,13 +18,10 @@ class CategoryManagementViewModel(
     private val addCategoryUseCase: AddCategoryUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase
-) : ViewModel() {
+) : ConfirmationViewModel() {
 
     private val _category = MutableStateFlow(Category())
     val category: StateFlow<Category> = _category.asStateFlow()
-
-    private val _confirmDelete = MutableStateFlow<Pair<Category?, Boolean>>(Pair(null, false))
-    val confirmDelete: StateFlow<Pair<Category?, Boolean>> = _confirmDelete.asStateFlow()
 
     val categories: StateFlow<List<Category>> = getAllCategoriesUseCase().stateIn(
         viewModelScope,
@@ -52,9 +48,6 @@ class CategoryManagementViewModel(
         _category.value = _category.value.copy(color = newValue)
     }
 
-    fun onConfirmDelete(category: Category?, confirmation: Boolean){
-        _confirmDelete.value = Pair(category, confirmation)
-    }
 
     fun editCategory(newValue: Category){
         _category.value = newValue
@@ -82,7 +75,7 @@ class CategoryManagementViewModel(
     fun deleteCategory(categoryId: Int){
         viewModelScope.launch {
             try {
-                _confirmDelete.value = Pair(null, false)
+                onConfirm(null, false)
                 val id = deleteCategoryUseCase(categoryId)
             } catch (e: Exception){
                 Log.e("Error Delete Category", "${e.message}")

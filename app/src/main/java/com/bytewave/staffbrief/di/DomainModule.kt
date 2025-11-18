@@ -11,6 +11,8 @@ import com.bytewave.staffbrief.domain.use_case.AddSoldierUseCase
 import com.bytewave.staffbrief.domain.use_case.AddSoldierUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.DeleteCategoryUseCase
 import com.bytewave.staffbrief.domain.use_case.DeleteCategoryUseCaseImpl
+import com.bytewave.staffbrief.domain.use_case.DeleteSoldierUseCase
+import com.bytewave.staffbrief.domain.use_case.DeleteSoldierUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesUseCase
@@ -36,6 +38,7 @@ val domainModule = module {
     single { StaffBriefDataBase.getInstance(get()).staffBriefDao }
 
     factory<AddSoldierUseCase> { AddSoldierUseCaseImpl(get()) }
+    factory<DeleteSoldierUseCase> { DeleteSoldierUseCaseImpl(get()) }
     factory<InsertSoldiersCategoriesUseCase> { InsertSoldiersCategoriesUseCaseImpl(get()) }
     factory<AddCategoryUseCase> { AddCategoryUseCaseImpl(get()) }
     factory<DeleteCategoryUseCase> { DeleteCategoryUseCaseImpl(get()) }
@@ -50,5 +53,5 @@ val domainModule = module {
     viewModel { CategoryManagementViewModel(get(), get(), get()) }
     viewModel { SoldierFormViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel( get(), get()) }
-    viewModel { SoldierScreenViewModel( get(), get(), get()) }
+    viewModel { SoldierScreenViewModel( get(), get(), get(), get()) }
 }

@@ -32,13 +32,6 @@ class SoldierFormViewModel(
     private val _relatives = MutableStateFlow<MutableList<Relative>>(mutableListOf())
     val relatives: StateFlow<List<Relative>> = _relatives.asStateFlow()
 
-    private val _confirmDelete = MutableStateFlow<Pair<Int?, Boolean>>(Pair(null, false))
-    val confirmDelete: StateFlow<Pair<Int?, Boolean>> = _confirmDelete.asStateFlow()
-
-    fun onConfirmDelete(index: Int?, confirmation: Boolean){
-        _confirmDelete.value = Pair(index, confirmation)
-    }
-
     fun onFirstNameChange(newValue: String) {
         _soldierState.value = _soldierState.value.copy(firstName = newValue)
     }
@@ -90,7 +83,7 @@ class SoldierFormViewModel(
         _relatives.value = _relatives.value.toMutableList().apply {
             if (index in indices) removeAt(index)
         }
-        onConfirmDelete(null, false)
+        onConfirm(null, false)
     }
 
     fun addSoldier(): Boolean{

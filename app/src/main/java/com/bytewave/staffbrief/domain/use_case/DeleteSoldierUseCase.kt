@@ -4,21 +4,21 @@ import android.util.Log
 import com.bytewave.staffbrief.domain.repository.Result
 import com.bytewave.staffbrief.domain.repository.StaffBriefRepository
 
-interface DeleteCategoryUseCase{
-    suspend operator fun invoke(id: Int): Int
+interface DeleteSoldierUseCase{
+    suspend operator fun invoke(id: Long): Int
 }
 
-class DeleteCategoryUseCaseImpl(
+class DeleteSoldierUseCaseImpl(
     private val repository: StaffBriefRepository
-) : DeleteCategoryUseCase {
-    override suspend fun invoke(id: Int): Int {
-        when(val result = repository.deleteCategory(id)){
+) : DeleteSoldierUseCase {
+    override suspend fun invoke(id: Long): Int {
+        when(val result = repository.deleteSoldier(id)){
             is Result.Success -> {
-                Log.d("Delete Category", "Success")
+                Log.d("Delete soldier", "Success")
                 return result.data
             }
             is Result.Error -> {
-                Log.d("Delete Category", "Error")
+                Log.d("Delete soldier", "Error")
                 return -1
             }
         }

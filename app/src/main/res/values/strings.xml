@@ -59,5 +59,7 @@
     <string name="soldier_form_screen">Editing the questionnaire</string>
     <string name="toast_soldier_add">Fill in the fields: last name, first name, patronymic</string>
     <string name="confirm_delete_relative">Do you really want to delete the relative</string>
+    <string name="delete_soldier">Delete soldier</string>
+    <string name="confirm_delete_soldier">Do you really want to delete the soldier</string>
 
 </resources>

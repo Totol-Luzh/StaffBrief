@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,9 +38,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
 import com.bytewave.staffbrief.domain.model.Relative
+import com.bytewave.staffbrief.presentation.components.ConfirmAlertDialog
 import com.bytewave.staffbrief.presentation.navigation.Routes
 import com.bytewave.staffbrief.presentation.viewmodels.SoldierScreenViewModel
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
 fun Soldier(
@@ -53,6 +56,19 @@ fun Soldier(
     val soldier = viewModel.soldier.value
     val relatives = viewModel.relatives.value
     val categories = viewModel.categories.value
+    val confirm by viewModel.confirmation.collectAsState()
+    if (confirm.second)
+        ConfirmAlertDialog(
+            dialogTitle = stringResource(R.string.deleting),
+            dialogText = stringResource(R.string.confirm_delete_soldier),
+            onConfirmation = {
+                confirm.first?.let {
+                    viewModel.deleteSoldier(it)
+                    navController.navigateUp()
+                }
+            },
+            onDismissRequest = { viewModel.onConfirm(null, false) }
+        )
 
     Scaffold(
         topBar = {
@@ -70,6 +86,11 @@ fun Soldier(
                     IconButton(onClick = {navController.navigate(Routes.CreateSoldier.createRoute(soldierId))}) {
                         Icon(painterResource(R.drawable.ic_edit),
                             contentDescription = stringResource(id = R.string.edit_soldier),
+                            tint = Color.Unspecified)}
+                    IconButton(
+                        onClick = { viewModel.onConfirm(soldierId, true) }) {
+                        Icon(painterResource(R.drawable.ic_delete_2),
+                            contentDescription = stringResource(id = R.string.delete_soldier),
                             tint = Color.Unspecified)}
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

@@ -1,6 +1,5 @@
 package com.bytewave.staffbrief.presentation.viewmodels
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bytewave.staffbrief.domain.model.Category
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
@@ -10,7 +9,7 @@ import kotlinx.coroutines.launch
 
 open class BaseViewModel(
     private val getAllCategoriesCurrentUseCase: GetAllCategoriesCurrentUseCase
-) : ViewModel() {
+) : ConfirmationViewModel() {
     protected val _categoryWithIndex = MutableStateFlow<List<Pair<Category, Boolean>>>(emptyList())
     val categoryWithIndex: StateFlow<List<Pair<Category, Boolean>>> = _categoryWithIndex
 
