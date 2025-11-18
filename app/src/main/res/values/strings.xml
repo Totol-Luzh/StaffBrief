@@ -18,7 +18,7 @@
     <string name="positive">Positive</string>
     <string name="negative">Negative</string>
 
-    <string name="soldier_screen">Soldier</string>
+    <string name="soldier_screen">Questionnaire</string>
     <string name="save_form">Save form</string>
     <string name="add_photo">Add photo</string>
     <string name="delete_photo">Delete photo</string>
@@ -37,7 +37,7 @@
     <string name="delete_relative">Delete relative</string>
 
     <string name="deleting">Deleting</string>
-    <string name="confirm_delete">Do you really want to delete the category</string>
+    <string name="confirm_delete_category">Do you really want to delete the category</string>
     <string name="category_name">Category name</string>
     <string name="priority">Priority from 1 to 127</string>
     <string name="priority_info">The priority affects the order in which categories are displayed on the home screen</string>
@@ -55,5 +55,9 @@
     <string name="without_category">Without a category</string>
     <string name="product_by">Product by ByteVawe</string>
     <string name="app_icon">App icon</string>
+    <string name="included_categories">Included in categories</string>
+    <string name="soldier_form_screen">Editing the questionnaire</string>
+    <string name="toast_soldier_add">Fill in the fields: last name, first name, patronymic</string>
+    <string name="confirm_delete_relative">Do you really want to delete the relative</string>
 
 </resources>

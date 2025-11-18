@@ -1,4 +1,4 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.viewmodels
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -9,8 +9,8 @@ import com.bytewave.staffbrief.domain.model.Soldier
 import com.bytewave.staffbrief.domain.use_case.AddRelativeUseCase
 import com.bytewave.staffbrief.domain.use_case.AddSoldierUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
-import com.bytewave.staffbrief.domain.use_case.GetSoldierByIdUseCase
 import com.bytewave.staffbrief.domain.use_case.GetRelativesBySoldierUseCase
+import com.bytewave.staffbrief.domain.use_case.GetSoldierByIdUseCase
 import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +31,13 @@ class SoldierFormViewModel(
 
     private val _relatives = MutableStateFlow<MutableList<Relative>>(mutableListOf())
     val relatives: StateFlow<List<Relative>> = _relatives.asStateFlow()
+
+    private val _confirmDelete = MutableStateFlow<Pair<Int?, Boolean>>(Pair(null, false))
+    val confirmDelete: StateFlow<Pair<Int?, Boolean>> = _confirmDelete.asStateFlow()
+
+    fun onConfirmDelete(index: Int?, confirmation: Boolean){
+        _confirmDelete.value = Pair(index, confirmation)
+    }
 
     fun onFirstNameChange(newValue: String) {
         _soldierState.value = _soldierState.value.copy(firstName = newValue)
@@ -83,9 +90,10 @@ class SoldierFormViewModel(
         _relatives.value = _relatives.value.toMutableList().apply {
             if (index in indices) removeAt(index)
         }
+        onConfirmDelete(null, false)
     }
 
-    fun addSoldier(){
+    fun addSoldier(): Boolean{
         if(soldierState.value.lastName.isNotBlank() && soldierState.value.firstName.isNotBlank() && soldierState.value.patronymic.isNotBlank()){
             viewModelScope.launch {
                 try {
@@ -121,7 +129,9 @@ class SoldierFormViewModel(
                     Log.e("Error Add Person", "${e.message}")
                 }
             }
+            return true
         }
+        return false
     }
 
     fun loadSoldier(id: Long){

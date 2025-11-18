@@ -123,12 +123,12 @@ class StaffBriefRepositoryImpl(private val staffBriefDao: StaffBriefDao) : Staff
         }
     }
 
-    override suspend fun insertSoldiersCategory(soldiersCategory: List<SoldierCategory>): Result<Boolean> = withContext(Dispatchers.IO) {
+    override suspend fun insertSoldiersCategories(soldiersCategories: List<SoldierCategory>): Result<Boolean> = withContext(Dispatchers.IO) {
         try {
-            Log.d("Insert Category Soldier", "$soldiersCategory")
-            staffBriefDao.insertSoldiersCategories(soldiersCategory.map{
-                it.toEntity()
-            })
+            soldiersCategories.forEach { item ->
+                if(!staffBriefDao.checkSoldierCategoryExists(item.soldierId, item.categoryId))
+                    staffBriefDao.insertSoldierCategory(item.toEntity())
+            }
             Result.Success(true)
         } catch (e: Throwable) {
             Result.Error(e)

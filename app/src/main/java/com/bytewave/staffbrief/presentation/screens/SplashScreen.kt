@@ -1,4 +1,4 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import com.bytewave.staffbrief.R
+import com.bytewave.staffbrief.presentation.navigation.Routes
 
 @Composable
 fun  SplashScreen (navController: NavHostController ) {

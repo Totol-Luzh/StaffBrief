@@ -29,7 +29,7 @@ class InsertSoldiersCategoriesUseCaseImpl(
                 return false
             }
         }
-        when(val result = repository.insertSoldiersCategory(listCategoryId.map{
+        when(val result = repository.insertSoldiersCategories(listCategoryId.map{
             SoldierCategory(soldierId = soldierId, categoryId = it)
         })){
             is Result.Success -> {

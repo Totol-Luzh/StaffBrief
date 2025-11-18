@@ -1,6 +1,7 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
@@ -25,9 +26,11 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -56,6 +59,8 @@ import com.bytewave.staffbrief.R
 import com.bytewave.staffbrief.data.db.converters.BitmapConverter
 import com.bytewave.staffbrief.data.db.entities.Rank
 import com.bytewave.staffbrief.domain.model.Relative
+import com.bytewave.staffbrief.presentation.components.ConfirmAlertDialog
+import com.bytewave.staffbrief.presentation.viewmodels.SoldierFormViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -70,6 +75,7 @@ fun CreateSoldier(
     viewModel.loadCategories()
     val soldier by viewModel.soldierState.collectAsState()
     val relatives by viewModel.relatives.collectAsState()
+    val confirmDelete by viewModel.confirmDelete.collectAsState()
     val scrollState = rememberLazyListState()
     val context = LocalContext.current
     val pickMedia = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
@@ -80,12 +86,23 @@ fun CreateSoldier(
                 viewModel.onPhotoChange(bitmapImage)
         }
     }
+    if(confirmDelete.second)
+        ConfirmAlertDialog(
+            dialogTitle = stringResource(R.string.deleting),
+            dialogText = stringResource(R.string.confirm_delete_relative),
+            onConfirmation = {
+                confirmDelete.first?.let {
+                    viewModel.deleteRelativeAt(it)
+                }
+            },
+            onDismissRequest = { viewModel.onConfirmDelete(null, false) }
+        )
 
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text(stringResource(R.string.soldier_screen), fontSize = 22.sp) },
+                title = { Text(stringResource(R.string.soldier_form_screen), fontSize = 22.sp, color = MaterialTheme.colorScheme.primary) },
                 navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
@@ -95,8 +112,13 @@ fun CreateSoldier(
                         )}},
                 actions = {
                     IconButton(onClick = {
-                        viewModel.addSoldier()
-                        navController.navigateUp() }) {
+                        if(viewModel.addSoldier()) navController.navigateUp()
+                        else Toast.makeText(
+                            context,
+                            context.getString(R.string.toast_soldier_add),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }) {
                         Icon(painterResource(R.drawable.ic_done),
                             contentDescription = stringResource(R.string.save_form),
                             tint = Color.Unspecified)
@@ -310,11 +332,13 @@ fun CategoryDropDownMenu(viewModel: SoldierFormViewModel) {
 @Composable
 fun CustomRelativeCard(relative: Relative,
                        index: Int,
-                       viewModel: SoldierFormViewModel){
+                       viewModel: SoldierFormViewModel
+){
     OutlinedCard(Modifier.padding(4.dp)) {
         TextField(
             value = relative.fullName,
             onValueChange = {viewModel.updateRelative(index, relative.copy(fullName = it))},
+            colors = OutlinedTextFieldDefaults.colors(),
             singleLine = true,
             modifier = Modifier
                 .padding(2.dp)
@@ -324,6 +348,7 @@ fun CustomRelativeCard(relative: Relative,
         TextField(
             value = relative.kinship,
             onValueChange = {viewModel.updateRelative(index, relative.copy(kinship = it))},
+            colors = OutlinedTextFieldDefaults.colors(),
             singleLine = true,
             modifier = Modifier
                 .padding(2.dp)
@@ -333,14 +358,15 @@ fun CustomRelativeCard(relative: Relative,
         TextField(
             value = relative.info,
             onValueChange = {viewModel.updateRelative(index, relative.copy(info = it))},
+            colors = OutlinedTextFieldDefaults.colors(),
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth(),
             placeholder = { Text(stringResource(R.string.general_info))}
         )
         OutlinedButton(
-            onClick = {viewModel.deleteRelativeAt(index)},
-            modifier = Modifier.padding(2.dp)
+            onClick = {viewModel.onConfirmDelete(index, true)},
+            modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
         ) {Text(stringResource(R.string.delete_relative))}
     }
 }

@@ -1,4 +1,4 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.bytewave.staffbrief.domain.model.Category
@@ -21,7 +21,7 @@ class HomeViewModel(
 ): BaseViewModel(getAllCategoriesCurrentUseCase) {
 
     private val _searchQuery = MutableStateFlow("")
-    val searchQuery:  StateFlow<String> = _searchQuery.asStateFlow()
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val soldiers: StateFlow<List<SoldierBrief>> =
@@ -33,7 +33,7 @@ class HomeViewModel(
             }
             .stateIn(
                 viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
+                SharingStarted.Companion.WhileSubscribed(5000),
                 emptyList()
             )
 
@@ -47,7 +47,8 @@ class HomeViewModel(
     override fun loadCategories(){
         viewModelScope.launch {
              val categories = getAllCategoriesCurrentUseCase(null).map { it to false}
-            _categoryWithIndex.value = if(categories.isEmpty()) categories else categories + Pair(Category(0, "", priority = 0), false)
+            _categoryWithIndex.value = if(categories.isEmpty()) categories else categories + Pair(
+                Category(0, "", priority = 0), false)
         }
     }
 }

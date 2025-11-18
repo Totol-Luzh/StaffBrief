@@ -1,4 +1,4 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

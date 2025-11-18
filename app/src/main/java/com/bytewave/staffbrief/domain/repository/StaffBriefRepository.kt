@@ -25,7 +25,7 @@ interface StaffBriefRepository {
     suspend fun getAllCategoriesCurrent(): Result<List<Category>>
     suspend fun getCategoriesBySoldier(soldierId: Long): Result<List<Category>>
 
-    suspend fun insertSoldiersCategory(soldiersCategory: List<SoldierCategory>): Result<Boolean>
+    suspend fun insertSoldiersCategories(soldiersCategory: List<SoldierCategory>): Result<Boolean>
     suspend fun deleteRemovedCategories(soldierId: Long, categoryIds: List<Int>): Result<Int>
     suspend fun deleteSoldierCategory(soldierCategoryId: Long): Result<Int>
 

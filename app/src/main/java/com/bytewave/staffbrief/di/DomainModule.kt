@@ -23,11 +23,11 @@ import com.bytewave.staffbrief.domain.use_case.GetSoldierByIdUseCase
 import com.bytewave.staffbrief.domain.use_case.GetSoldierByIdUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCase
 import com.bytewave.staffbrief.domain.use_case.InsertSoldiersCategoriesUseCaseImpl
-import com.bytewave.staffbrief.presentation.BaseViewModel
-import com.bytewave.staffbrief.presentation.CategoryManagementViewModel
-import com.bytewave.staffbrief.presentation.HomeViewModel
-import com.bytewave.staffbrief.presentation.SoldierFormViewModel
-import com.bytewave.staffbrief.presentation.SoldierScreenViewModel
+import com.bytewave.staffbrief.presentation.viewmodels.BaseViewModel
+import com.bytewave.staffbrief.presentation.viewmodels.CategoryManagementViewModel
+import com.bytewave.staffbrief.presentation.viewmodels.HomeViewModel
+import com.bytewave.staffbrief.presentation.viewmodels.SoldierFormViewModel
+import com.bytewave.staffbrief.presentation.viewmodels.SoldierScreenViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -50,5 +50,5 @@ val domainModule = module {
     viewModel { CategoryManagementViewModel(get(), get(), get()) }
     viewModel { SoldierFormViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel( get(), get()) }
-    viewModel { SoldierScreenViewModel( get(), get()) }
+    viewModel { SoldierScreenViewModel( get(), get(), get()) }
 }

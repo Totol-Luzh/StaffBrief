@@ -1,4 +1,4 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.viewmodels
 
 import android.util.Log
 import androidx.compose.ui.graphics.Color
@@ -29,7 +29,7 @@ class CategoryManagementViewModel(
 
     val categories: StateFlow<List<Category>> = getAllCategoriesUseCase().stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.Companion.WhileSubscribed(5000),
         emptyList()
     )
 

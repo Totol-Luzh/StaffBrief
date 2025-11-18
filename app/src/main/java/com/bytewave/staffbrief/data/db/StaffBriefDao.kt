@@ -51,7 +51,9 @@ interface StaffBriefDao {
         fun getCategoryBySoldier(soldierId: Long): List<CategoriesEntity>
 
         @Insert(onConflict = OnConflictStrategy.IGNORE)
-        fun insertSoldiersCategories(soldierCategory: List<SoldiersCategoriesEntity>)
+        fun insertSoldierCategory(soldierCategory: SoldiersCategoriesEntity)
+        @Query("SELECT EXISTS(SELECT 1 FROM soldiers_categories WHERE soldier_id = :soldierId AND category_id = :categoryId)")
+        suspend fun checkSoldierCategoryExists(soldierId: Long, categoryId: Int): Boolean
         @Query("DELETE FROM soldiers_categories WHERE soldier_id = :soldierId AND category_id NOT IN (:categoryIds)")
         suspend fun deleteRemovedCategories(soldierId: Long, categoryIds: List<Int>): Int
         @Query("DELETE FROM soldiers_categories WHERE id = :soldierCategoryId")

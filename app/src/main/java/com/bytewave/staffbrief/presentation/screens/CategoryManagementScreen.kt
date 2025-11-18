@@ -1,4 +1,4 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,18 +19,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -44,11 +44,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
+import com.bytewave.staffbrief.presentation.components.ConfirmAlertDialog
+import com.bytewave.staffbrief.presentation.viewmodels.CategoryManagementViewModel
 import com.github.skydoves.colorpicker.compose.AlphaTile
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
@@ -79,12 +82,13 @@ fun CategoryManagement(
     if(confirm.second)
         ConfirmAlertDialog(
             dialogTitle = stringResource(R.string.deleting),
-            dialogText = stringResource(R.string.confirm_delete),
+            dialogText = stringResource(R.string.confirm_delete_category),
             onConfirmation = {
-                confirm.first?.let{
-                    viewModel.deleteCategory(it.id) }
+                confirm.first?.let {
+                    viewModel.deleteCategory(it.id)
+                }
             },
-            onDismissRequest = {viewModel.onConfirmDelete(null, false)}
+            onDismissRequest = { viewModel.onConfirmDelete(null, false) }
         )
 
     BottomSheetScaffold(
@@ -100,7 +104,8 @@ fun CategoryManagement(
                     modifier = Modifier.fillMaxWidth(),
                     value = category.name,
                     onValueChange = { if(it.length <= 15)viewModel.onCategoryNameChange(it) },
-                    label = { Text(stringResource(R.string.category_name)) }
+                    label = { Text(stringResource(R.string.category_name)) },
+                    singleLine = true
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -110,7 +115,7 @@ fun CategoryManagement(
                         value = (category.priority ?: "").toString() ,
                         onValueChange = { if(it.length <= 3)viewModel.onPriorityChange(it) },
                         label = { Text(stringResource(R.string.priority)) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
                         trailingIcon = {
                             IconButton(onClick = {
                                 Toast.makeText(
@@ -172,7 +177,7 @@ fun CategoryManagement(
                     controller = controller,
                     onColorChanged = {}
                 )
-                Row(horizontalArrangement = Arrangement.Center) {
+                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(bottom = 4.dp)) {
                     OutlinedButton(onClick = {
                         manageBottomSheet(false, scope, scaffoldState)
                         viewModel.newCategory()
@@ -202,7 +207,7 @@ fun CategoryManagement(
         },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.category_management), fontSize = 22.sp) },
+                title = { Text(stringResource(R.string.category_management), fontSize = 22.sp, color = MaterialTheme.colorScheme.primary) },
               navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
@@ -234,6 +239,7 @@ fun CategoryManagement(
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .fillMaxSize(1f)
                 .padding(innerPadding)
                 .padding(4.dp)
         )
@@ -310,35 +316,4 @@ fun manageBottomSheet(isExpand: Boolean, scope: CoroutineScope, scaffoldState: B
         scope.launch {
             scaffoldState.bottomSheetState.hide()
         }
-}
-
-
-@Composable
-fun ConfirmAlertDialog(dialogTitle: String ,
-                      dialogText: String ,
-                      onDismissRequest: () -> Unit ,
-                      onConfirmation: () -> Unit){
-    AlertDialog(
-        modifier = Modifier.fillMaxWidth( 0.92f ),
-        shape = RoundedCornerShape( 20. dp),
-        onDismissRequest = {
-            onDismissRequest()
-        },
-        confirmButton = {
-            TextButton(onClick = { onConfirmation() }) {
-                Text(text = stringResource(R.string.yes) )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { onDismissRequest() }) {
-                Text(text = stringResource(R.string.cancel) )
-            }
-        },
-        title = {
-            Text(text = dialogTitle)
-        },
-        text = {
-            Text(text = dialogText)
-        }
-    )
 }

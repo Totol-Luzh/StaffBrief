@@ -18,7 +18,7 @@
     <string name="positive">Положительное</string>
     <string name="negative">Отрицательное</string>
 
-    <string name="soldier_screen">Военнослужащий</string>
+    <string name="soldier_screen">Анкета</string>
     <string name="save_form">Сохранить анкету</string>
     <string name="add_photo">Добавить фото</string>
     <string name="delete_photo">Удалить фото</string>
@@ -37,7 +37,7 @@
     <string name="delete_relative">Удалить родственника</string>
 
     <string name="deleting">Удаление</string>
-    <string name="confirm_delete">Вы действительно хотите удалить категорию</string>
+    <string name="confirm_delete_category">Вы действительно хотите удалить категорию</string>
     <string name="category_name">Название категории</string>
     <string name="priority">Приоритет категории от 1 до 127</string>
     <string name="priority_info">Приоритет влияет на порядок отображения категорий на главном экране</string>
@@ -55,5 +55,9 @@
     <string name="without_category">Без категории</string>
     <string name="product_by">Product by ByteVawe</string>
     <string name="app_icon">Иконка приложения</string>
+    <string name="included_categories">Включен в категории</string>
+    <string name="soldier_form_screen">Правка анкеты</string>
+    <string name="toast_soldier_add">Заполните поля: фамилия, имя, отчество</string>
+    <string name="confirm_delete_relative">Вы действительно хотите удалить родственника</string>
 
 </resources>

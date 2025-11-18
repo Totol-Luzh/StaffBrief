@@ -1,6 +1,7 @@
-package com.bytewave.staffbrief.presentation
+package com.bytewave.staffbrief.presentation.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,12 +30,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bytewave.staffbrief.R
 import com.bytewave.staffbrief.domain.model.SoldierBrief
+import com.bytewave.staffbrief.presentation.navigation.Routes
+import com.bytewave.staffbrief.presentation.viewmodels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -50,11 +52,11 @@ fun Home(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text(stringResource(id = R.string.home_screen), fontSize = 22.sp) },
+                title = { Text(stringResource(id = R.string.home_screen), fontSize = 22.sp, color = MaterialTheme.colorScheme.primary) },
                 actions = {
                     IconButton(onClick = { navController.navigate(Routes.CategoryManagement.route) }) {
                         Icon(
-                            painterResource(R.drawable.ic_settings),
+                            painterResource(R.drawable.ic_menu),
                             contentDescription = stringResource(R.string.settings),
                             tint = Color.Unspecified
                         )
@@ -100,7 +102,8 @@ fun Home(
                             tint = Color.Unspecified)
                 }},
                 modifier = Modifier.padding(4.dp).fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true
             )
             LazyRow {
                 items(categories) { category ->
@@ -115,12 +118,13 @@ fun Home(
                                 category.first.name) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = category.first.color,
-                            selectedLabelColor = Color.Black
+                            selectedLabelColor = Color.DarkGray,
+                            labelColor = MaterialTheme.colorScheme.secondary
                         )
                     )
                 }
             }
-            LazyColumn {
+            LazyColumn(Modifier.fillMaxSize(1f)) {
                 items(soldiers) { soldier ->
                     SoldierCard(soldier) { id ->
                         navController.navigate(
@@ -152,8 +156,7 @@ fun SoldierCard(soldier: SoldierBrief, navigateToSoldier: (soldierId :Long) -> U
         Text(
             text = "${soldier.lastName} ${soldier.firstName} ${soldier.patronymic}",
             modifier = Modifier
-                .padding(8.dp),
-            textAlign = TextAlign.Center,
+                .padding(8.dp)
         )
 
     }
