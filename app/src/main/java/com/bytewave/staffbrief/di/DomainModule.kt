@@ -1,5 +1,6 @@
 package com.bytewave.staffbrief.di
 
+import com.bytewave.staffbrief.data.DataStoreManager
 import com.bytewave.staffbrief.data.db.StaffBriefDataBase
 import com.bytewave.staffbrief.domain.repository.StaffBriefRepository
 import com.bytewave.staffbrief.domain.repository.StaffBriefRepositoryImpl
@@ -17,8 +18,8 @@ import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesCurrentUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesUseCase
 import com.bytewave.staffbrief.domain.use_case.GetAllCategoriesUseCaseImpl
-import com.bytewave.staffbrief.domain.use_case.GetAllSoldierUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.GetAllSoldierUseCase
+import com.bytewave.staffbrief.domain.use_case.GetAllSoldierUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.GetRelativesBySoldierUseCase
 import com.bytewave.staffbrief.domain.use_case.GetRelativesBySoldierUseCaseImpl
 import com.bytewave.staffbrief.domain.use_case.GetSoldierByIdUseCase
@@ -30,12 +31,15 @@ import com.bytewave.staffbrief.presentation.viewmodels.CategoryManagementViewMod
 import com.bytewave.staffbrief.presentation.viewmodels.HomeViewModel
 import com.bytewave.staffbrief.presentation.viewmodels.SoldierFormViewModel
 import com.bytewave.staffbrief.presentation.viewmodels.SoldierScreenViewModel
+import com.bytewave.staffbrief.presentation.viewmodels.ThemeViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val domainModule = module {
     single<StaffBriefRepository> { StaffBriefRepositoryImpl(get()) }
     single { StaffBriefDataBase.getInstance(get()).staffBriefDao }
+    single { DataStoreManager(androidContext()) }
 
     factory<AddSoldierUseCase> { AddSoldierUseCaseImpl(get()) }
     factory<DeleteSoldierUseCase> { DeleteSoldierUseCaseImpl(get()) }
@@ -49,6 +53,7 @@ val domainModule = module {
     factory<AddRelativeUseCase> { AddRelativeUseCaseImpl(get()) }
     factory<GetRelativesBySoldierUseCase> { GetRelativesBySoldierUseCaseImpl(get()) }
 
+    viewModel { ThemeViewModel(get()) }
     viewModel { BaseViewModel(get()) }
     viewModel { CategoryManagementViewModel(get(), get(), get()) }
     viewModel { SoldierFormViewModel(get(), get(), get(), get(), get(), get()) }

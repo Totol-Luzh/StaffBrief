@@ -39,7 +39,7 @@
     <string name="deleting">Удаление</string>
     <string name="confirm_delete_category">Вы действительно хотите удалить категорию</string>
     <string name="category_name">Название категории</string>
-    <string name="priority">Приоритет категории от 1 до 127</string>
+    <string name="priority">Приоритет: 1..127</string>
     <string name="priority_info">Приоритет влияет на порядок отображения категорий на главном экране</string>
     <string name="add_category">Добавить категорию</string>
     <string name="delete_category">Удалить категорию</string>
@@ -49,7 +49,6 @@
     <string name="info">Дополнительная информация</string>
     <string name="reset_color">Сбросить цвет</string>
     <string name="category_management">Управление категориями</string>
-    <string name="toast_category_color">Цвет категории</string>
     <string name="edit_category">Изменить категорию</string>
     <string name="save_category">Сохранить категорию</string>
     <string name="without_category">Без категории</string>
@@ -61,5 +60,6 @@
     <string name="confirm_delete_relative">Вы действительно хотите удалить родственника</string>
     <string name="delete_soldier">Удалить военнослужащего</string>
     <string name="confirm_delete_soldier">Вы действительно хотите удалить военнослужащего</string>
+    <string name="change_theme">Поменять тему</string>
 
 </resources>

@@ -20,10 +20,10 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -42,7 +42,6 @@ import com.bytewave.staffbrief.presentation.components.ConfirmAlertDialog
 import com.bytewave.staffbrief.presentation.navigation.Routes
 import com.bytewave.staffbrief.presentation.viewmodels.SoldierScreenViewModel
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.getValue
 
 @Composable
 fun Soldier(
@@ -74,7 +73,7 @@ fun Soldier(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text(stringResource(R.string.soldier_screen), fontSize = 22.sp, color = MaterialTheme.colorScheme.primary) },
+                title = { Text(stringResource(R.string.soldier_screen)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
@@ -92,13 +91,7 @@ fun Soldier(
                         Icon(painterResource(R.drawable.ic_delete_2),
                             contentDescription = stringResource(id = R.string.delete_soldier),
                             tint = Color.Unspecified)}
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.DarkGray,
-                    titleContentColor = Color.LightGray,
-                    navigationIconContentColor = Color.LightGray,
-                    actionIconContentColor = Color.LightGray
-                )
+                }
             )
         })
     { innerPadding ->

@@ -13,11 +13,11 @@ import com.bytewave.staffbrief.presentation.screens.Soldier
 import com.bytewave.staffbrief.presentation.screens.SplashScreen
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, onToggleTheme: () -> Unit) {
     NavHost(navController = navController, startDestination = Routes.SplashScreen.route) {
 
         composable(Routes.SplashScreen.route) {SplashScreen(navController)}
-        composable(Routes.Home.route) { Home(navController) }
+        composable(Routes.Home.route) { Home(navController, onToggleTheme) }
         composable(Routes.CreateSoldier.route,
             arguments = listOf(navArgument("soldierId") {type = NavType.LongType})
         ) {backStackEntry ->

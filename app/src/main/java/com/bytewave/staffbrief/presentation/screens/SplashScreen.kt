@@ -44,7 +44,7 @@ fun  SplashScreen (navController: NavHostController ) {
         verticalArrangement = Arrangement.Center
     ) {
         Surface(
-            color = Color.White,
+            color = MaterialTheme.colorScheme.primary,
             shape = CircleShape,
             modifier = Modifier.size(110.dp)
         ) {
@@ -60,14 +60,14 @@ fun  SplashScreen (navController: NavHostController ) {
 
         Text(
             text = stringResource(R.string.app_name),
-            fontSize=28.sp, fontFamily= FontFamily.Monospace, color = Color.White
+            fontSize=28.sp, fontFamily= FontFamily.Monospace, color = MaterialTheme.colorScheme.onPrimary
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = stringResource(R.string.product_by),
-            fontSize=20.sp, fontFamily= FontFamily.Monospace, color = Color.White
+            fontSize=20.sp, fontFamily= FontFamily.Monospace, color = MaterialTheme.colorScheme.onPrimary
         )
     }
 }

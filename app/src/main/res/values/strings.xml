@@ -39,7 +39,7 @@
     <string name="deleting">Deleting</string>
     <string name="confirm_delete_category">Do you really want to delete the category</string>
     <string name="category_name">Category name</string>
-    <string name="priority">Priority from 1 to 127</string>
+    <string name="priority">Priority: 1..127</string>
     <string name="priority_info">The priority affects the order in which categories are displayed on the home screen</string>
     <string name="add_category">Add category</string>
     <string name="delete_category">Delete category</string>
@@ -49,11 +49,10 @@
     <string name="info">Additional information</string>
     <string name="reset_color">Reset the color</string>
     <string name="category_management">Category management</string>
-    <string name="toast_category_color">Color of the category</string>
     <string name="edit_category">Edit category</string>
     <string name="save_category">Save the category</string>
     <string name="without_category">Without a category</string>
-    <string name="product_by">Product by ByteVawe</string>
+    <string name="product_by">Product by ByteWave</string>
     <string name="app_icon">App icon</string>
     <string name="included_categories">Included in categories</string>
     <string name="soldier_form_screen">Editing the questionnaire</string>
@@ -61,5 +60,6 @@
     <string name="confirm_delete_relative">Do you really want to delete the relative</string>
     <string name="delete_soldier">Delete soldier</string>
     <string name="confirm_delete_soldier">Do you really want to delete the soldier</string>
+    <string name="change_theme">Change  the theme</string>
 
 </resources>

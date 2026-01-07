@@ -25,13 +25,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -40,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -111,7 +110,7 @@ fun CategoryManagement(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
-                        modifier = Modifier.weight(4f),
+                        modifier = Modifier.weight(5f),
                         value = (category.priority ?: "").toString() ,
                         onValueChange = { if(it.length <= 3)viewModel.onPriorityChange(it) },
                         label = { Text(stringResource(R.string.priority)) },
@@ -137,27 +136,9 @@ fun CategoryManagement(
                             .padding(4.dp)
                             .weight(2f)
                             .height(60.dp)
-                            .border(
-                                width = 2.dp,
-                                color = Color.Gray,
-                                shape = RoundedCornerShape(6.dp)
-                            ),
+                            .clip(RoundedCornerShape(6.dp)),
                         controller = controller
                     )
-                    IconButton(
-                        modifier = Modifier.height(40.dp),
-                        onClick = {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.toast_category_color),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    ) {
-                        Icon(painterResource(R.drawable.ic_info),
-                            contentDescription = stringResource(R.string.info),
-                            tint = Color.Unspecified)
-                    }
                     IconButton(
                         modifier = Modifier.height(40.dp),
                         onClick = {
@@ -207,7 +188,7 @@ fun CategoryManagement(
         },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.category_management), fontSize = 22.sp, color = MaterialTheme.colorScheme.primary) },
+                title = { Text(stringResource(R.string.category_management)) },
               navigationIcon = {
                     IconButton(onClick = {navController.navigateUp()}) {
                         Icon(
@@ -225,13 +206,7 @@ fun CategoryManagement(
                             contentDescription = stringResource(R.string.add_category),
                             tint = Color.Unspecified
                         )}
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.DarkGray,
-                    titleContentColor = Color.LightGray,
-                    navigationIconContentColor = Color.LightGray,
-                    actionIconContentColor = Color.LightGray
-                )
+                }
             )
         },
         scaffoldState = scaffoldState,

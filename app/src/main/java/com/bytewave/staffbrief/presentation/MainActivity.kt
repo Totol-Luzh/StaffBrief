@@ -7,24 +7,29 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import com.bytewave.staffbrief.presentation.navigation.NavGraph
+import com.bytewave.staffbrief.presentation.viewmodels.ThemeViewModel
 import com.bytewave.staffbrief.ui.theme.StaffBriefTheme
 import org.koin.androidx.compose.KoinAndroidContext
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : ComponentActivity() {
+class MainActivity() : ComponentActivity() {
+    private val viewModel: ThemeViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             KoinAndroidContext {
-                StaffBriefTheme {
-                    Main()
+                StaffBriefTheme(viewModel.isDarkTheme.value) {
+                    Main(
+                        onToggleTheme = { viewModel.toggleTheme()}
+                    )
                 }
             }
         }
     }
 }
 @Composable
-fun Main(){
+fun Main(onToggleTheme: () -> Unit){
     val navController = rememberNavController()
-    NavGraph(navController = navController)
+    NavGraph(navController = navController, onToggleTheme)
 }
